@@ -1,0 +1,1334 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>osh Visual Guide</title>
+<style>
+:root{
+  --bg:#f6f7fb;--panel:#ffffff;--ink:#1b2133;--muted:#5d6680;--line:#dde1ec;
+  --accent:#5b5bd6;--accent-soft:#ececfd;
+  --c-cmd:#2f7de1;--c-cmd-soft:#e4effd;
+  --c-pipe:#c2410c;--c-pipe-soft:#fdeee4;
+  --c-redir:#7c3aed;--c-redir-soft:#f1eafe;
+  --c-bg:#0f8a6a;--c-bg-soft:#e1f5ef;
+  --c-err:#d13a4a;--c-err-soft:#fde8ea;
+  --c-zombie:#8a6d00;--c-zombie-soft:#fbf3d0;
+  --code-bg:#f1f3f9;--hl:#fff3b8;--term-bg:#11151f;--term-ink:#d8f5e3;
+  --shadow:0 1px 2px rgba(20,25,40,.06),0 4px 14px rgba(20,25,40,.05);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e111a;--panel:#161a26;--ink:#e6e9f2;--muted:#9aa3ba;--line:#2a3042;
+  --accent:#8f8ff5;--accent-soft:#25264a;
+  --c-cmd:#6aa8f5;--c-cmd-soft:#16273f;
+  --c-pipe:#f08a4b;--c-pipe-soft:#3a2214;
+  --c-redir:#b28cf7;--c-redir-soft:#2a1f45;
+  --c-bg:#3fc89f;--c-bg-soft:#123329;
+  --c-err:#f07482;--c-err-soft:#3d1a20;
+  --c-zombie:#e0c34a;--c-zombie-soft:#3a3214;
+  --code-bg:#11141d;--hl:#4a4215;--term-bg:#080a10;--term-ink:#b9f2cf;
+  --shadow:none;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e111a;--panel:#161a26;--ink:#e6e9f2;--muted:#9aa3ba;--line:#2a3042;
+  --accent:#8f8ff5;--accent-soft:#25264a;
+  --c-cmd:#6aa8f5;--c-cmd-soft:#16273f;
+  --c-pipe:#f08a4b;--c-pipe-soft:#3a2214;
+  --c-redir:#b28cf7;--c-redir-soft:#2a1f45;
+  --c-bg:#3fc89f;--c-bg-soft:#123329;
+  --c-err:#f07482;--c-err-soft:#3d1a20;
+  --c-zombie:#e0c34a;--c-zombie-soft:#3a3214;
+  --code-bg:#11141d;--hl:#4a4215;--term-bg:#080a10;--term-ink:#b9f2cf;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+code,pre,.mono{font-family:ui-monospace,"Cascadia Code",Consolas,Menlo,monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header.top{padding:36px 0 8px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-size:32px;line-height:1.2;margin:6px 0 8px}
+h2{font-size:22px;margin:0 0 6px}
+h3{font-size:16px;margin:0 0 6px}
+p{margin:0 0 10px}
+.lead{color:var(--muted);max-width:760px}
+nav.toc{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+nav.toc .wrap{display:flex;gap:4px;overflow-x:auto;padding-top:8px;padding-bottom:8px}
+nav.toc a{white-space:nowrap;color:var(--muted);text-decoration:none;font-size:13px;padding:6px 10px;border-radius:999px}
+nav.toc a:hover{background:var(--accent-soft);color:var(--ink)}
+#themeBtn{margin-left:auto;flex:none}
+section.block{padding:34px 0 10px}
+.sub{color:var(--muted);margin-bottom:16px;max-width:780px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:7px 12px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:disabled{opacity:.45;cursor:not-allowed}
+.chip-btn{font-size:13px;padding:5px 10px;border-radius:999px}
+
+/* Big picture */
+.arch{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:stretch}
+.arch .box{cursor:pointer;text-align:left;border:2px solid var(--line);border-radius:12px;padding:12px;background:var(--panel);transition:border-color .15s,transform .15s;position:relative}
+.arch .box:hover{transform:translateY(-2px)}
+.arch .box.on{border-color:var(--accent);background:var(--accent-soft)}
+.arch .box .t{font-weight:650;font-size:14px}
+.arch .box .f{font-size:12px;color:var(--muted)}
+.arch .box .ic{font-size:22px;line-height:1;margin-bottom:6px}
+.flowline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:6px 0 12px;font-size:12px;color:var(--muted);text-align:center}
+.archInfo{margin-top:12px}
+.archInfo pre{margin:8px 0 0}
+.pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px;vertical-align:middle}
+@media(max-width:820px){.arch,.flowline{grid-template-columns:1fr 1fr}.flowline{display:none}}
+
+/* Simulator */
+.simTop{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.cmdIn{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;background:var(--term-bg);border-radius:10px;padding:4px 4px 4px 12px}
+.cmdIn span{color:var(--term-ink);font-family:ui-monospace,Consolas,monospace}
+.cmdIn input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;font:15px ui-monospace,Consolas,monospace;padding:8px 0}
+.examples{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+.simGrid{display:grid;grid-template-columns:1.05fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:900px){.simGrid{grid-template-columns:1fr}}
+.simGrid>*,.mapGrid>*,.two>*,.concepts>*{min-width:0}
+.stepBar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+.dots{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+.dots i{width:22px;height:6px;border-radius:3px;background:var(--line);cursor:pointer}
+.dots i.done{background:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.dots i.cur{background:var(--accent)}
+.stepHead{display:flex;gap:10px;align-items:baseline}
+.stepNum{font-size:12px;color:var(--muted);white-space:nowrap}
+.stepTitle{font-size:18px;font-weight:650}
+.stepText{margin-top:6px}
+.stepText code{background:var(--code-bg);padding:1px 5px;border-radius:5px;font-size:.92em}
+.analogy{margin-top:10px;border-left:3px solid var(--accent);background:var(--accent-soft);padding:8px 12px;border-radius:0 8px 8px 0;font-size:14px}
+.tokens{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tok{font-family:ui-monospace,Consolas,monospace;font-size:14px;padding:4px 9px;border-radius:7px;border:1.5px solid var(--line);background:var(--code-bg);position:relative}
+.tok small{display:block;font-family:system-ui,sans-serif;font-size:10px;color:var(--muted);text-align:center;margin-top:1px}
+.tok.cmd{border-color:var(--c-cmd);background:var(--c-cmd-soft)}
+.tok.cmd2{border-color:var(--c-cmd);background:var(--c-cmd-soft);border-style:dashed}
+.tok.pipe{border-color:var(--c-pipe);background:var(--c-pipe-soft)}
+.tok.redir,.tok.file{border-color:var(--c-redir);background:var(--c-redir-soft)}
+.tok.amp{border-color:var(--c-bg);background:var(--c-bg-soft)}
+.tok.bad{border-color:var(--c-err);background:var(--c-err-soft)}
+.parsed{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin-top:10px;font-size:14px}
+.parsed b{color:var(--muted);font-weight:500}
+
+.vis{display:flex;flex-direction:column;gap:12px}
+.vis h3{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px}
+.tree{display:flex;flex-direction:column;align-items:flex-start}
+.pnode{border:2px solid var(--line);border-radius:10px;padding:7px 10px;background:var(--panel);min-width:190px;transition:all .3s}
+.pnode .pid{font-size:12px;color:var(--muted)}
+.pnode .nm{font-family:ui-monospace,Consolas,monospace;font-weight:650}
+.pnode .st{font-size:11px;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:middle;white-space:nowrap}
+.pnode.shell{border-color:var(--line);opacity:.8}
+.pnode.osh{border-color:var(--accent)}
+.pnode.new{animation:pop .45s ease}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.st.running{background:var(--c-cmd-soft);color:var(--c-cmd)}
+.st.working{background:var(--accent-soft);color:var(--accent)}
+.st.forked{background:var(--accent-soft);color:var(--accent)}
+.st.waiting{background:var(--code-bg);color:var(--muted)}
+.st.zombie{background:var(--c-zombie-soft);color:var(--c-zombie)}
+.st.done{background:var(--c-bg-soft);color:var(--c-bg)}
+.st.failed{background:var(--c-err-soft);color:var(--c-err)}
+.st.reaped{background:var(--code-bg);color:var(--muted)}
+.pnode.reaped{opacity:.4;border-style:dashed}
+.kids{border-left:2px solid var(--line);margin-left:22px;padding-left:16px;display:flex;flex-direction:column;gap:8px;padding-top:8px}
+.kids>.row{position:relative}
+.kids>.row::before{content:"";position:absolute;left:-16px;top:20px;width:14px;border-top:2px solid var(--line)}
+.fdt{margin-top:6px;display:grid;grid-template-columns:auto 1fr;gap:1px 8px;font-size:12px}
+.fdt .k{font-family:ui-monospace,Consolas,monospace;color:var(--muted)}
+.fdt .v{font-family:ui-monospace,Consolas,monospace}
+.fdt .v.chg{color:var(--c-redir);font-weight:700}
+.fdt .v.pp{color:var(--c-pipe);font-weight:700}
+.pipeObj{display:inline-flex;align-items:center;gap:8px;margin-top:8px;border:2px solid var(--c-pipe);background:var(--c-pipe-soft);border-radius:999px;padding:4px 12px;font-size:13px}
+.pipeObj .tube{width:80px;height:10px;border-radius:5px;background:linear-gradient(90deg,var(--c-pipe) 0 20%,transparent 20% 40%,var(--c-pipe) 40% 60%,transparent 60% 80%,var(--c-pipe) 80%);background-size:40px 10px;animation:flow 1s linear infinite;opacity:.8}
+@keyframes flow{to{background-position:40px 0}}
+.term{background:var(--term-bg);color:var(--term-ink);border-radius:10px;padding:12px;font:13px/1.55 ui-monospace,Consolas,monospace;white-space:pre-wrap;min-height:90px;max-height:220px;overflow:auto}
+.term .err{color:#ff9aa6}
+.term .dim{color:#7e8aa3}
+.evlog{font:12px/1.6 ui-monospace,Consolas,monospace;background:var(--code-bg);border-radius:8px;padding:8px 10px;overflow-x:auto;white-space:pre;min-height:40px}
+.evlog .newl{background:var(--hl)}
+.files{display:flex;flex-wrap:wrap;gap:6px}
+.file{font:12px ui-monospace,Consolas,monospace;border:1px solid var(--line);border-radius:6px;padding:3px 7px;background:var(--panel)}
+.file.newf{border-color:var(--c-redir);background:var(--c-redir-soft)}
+
+.codeBox{max-height:300px;overflow:auto;background:var(--code-bg);border-radius:10px;font:12.5px/1.55 ui-monospace,Consolas,monospace;margin-top:12px;border:1px solid var(--line)}
+.codeBox .ln{display:flex;white-space:pre}
+.codeBox .ln .n{flex:none;width:44px;text-align:right;padding-right:10px;color:var(--muted);user-select:none}
+.codeBox .ln.hl{background:var(--hl)}
+.codeLabel{font-size:12px;color:var(--muted);margin-top:12px}
+
+/* Concepts */
+.concepts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:900px){.concepts{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.concepts{grid-template-columns:1fr}}
+.concept h3{display:flex;align-items:center;gap:8px}
+.concept h3 code{font-size:15px;background:var(--accent-soft);color:var(--accent);padding:2px 8px;border-radius:6px}
+.concept .mini{margin:10px 0 4px;min-height:96px;display:flex;align-items:center;justify-content:center}
+.concept svg{width:100%;max-width:280px;height:auto}
+.concept svg text{font:12px system-ui,sans-serif;fill:var(--ink)}
+.concept svg .muted{fill:var(--muted)}
+.concept .eg{font-size:13px;color:var(--muted)}
+
+/* Code map */
+.mapGrid{display:grid;grid-template-columns:260px 1fr;gap:14px}
+@media(max-width:820px){.mapGrid{grid-template-columns:1fr}}
+.fnList{display:flex;flex-direction:column;gap:6px}
+.fnList button{text-align:left;padding:9px 12px}
+.fnList button.on{border-color:var(--accent);background:var(--accent-soft)}
+.fnList button .l{font-size:11px;color:var(--muted);display:block}
+
+/* Modes */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.callout{border-radius:12px;padding:14px 16px;border:1px solid var(--line);background:var(--panel)}
+.callout.warn{border-color:var(--c-zombie);background:var(--c-zombie-soft)}
+.gaps{display:grid;gap:10px}
+.gap{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+.gap .tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.tag.bug{background:var(--c-err-soft);color:var(--c-err)}
+.tag.idea{background:var(--c-bg-soft);color:var(--c-bg)}
+.tag.note{background:var(--c-zombie-soft);color:var(--c-zombie)}
+
+/* Quiz */
+.quiz{display:grid;gap:10px}
+details.q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+details.q summary{cursor:pointer;font-weight:600}
+details.q[open] summary{margin-bottom:8px}
+footer{color:var(--muted);font-size:13px;padding:30px 0 50px}
+html[lang="mn"] .en{display:none!important}
+html[lang="en"] .mn{display:none!important}
+.navBtns{margin-left:auto;display:flex;gap:6px;flex:none}
+.langSw{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.langSw button{border:0;border-radius:0;padding:5px 11px;font-size:13px;background:var(--panel)}
+.langSw button.on{background:var(--accent);color:#fff}
+</style>
+</head>
+<body>
+
+<header class="top wrap">
+  <div class="eyebrow"><span class="mn">F.CSM302 Үйлдлийн систем · БД1 · Баг II-4-1</span><span class="en">F.CSM302 Operating Systems · БД1 · Team II-4-1</span></div>
+  <h1><span class="mn"><code>osh</code> хэрхэн ажилладаг вэ: дүрслэлээр</span><span class="en">How <code>osh</code> works, visually</span></h1>
+  <p class="lead mn">Танай багийн UNIX Shell-ийн алхам алхмаар хийх аялал. Доорх симулятор дээр команд ажиллуулаад shell командыг хэрхэн уншиж, хэсэглэж, <code>fork()</code>-оор хүүхэд процесс үүсгэж, оролт гаралтыг нь өөр тийш чиглүүлж, дуусахыг нь хүлээдгийг харна уу. Алхам бүр <code>src/osh.c</code> доторх жинхэнэ мөрийг заана.</p>
+  <p class="lead en">A guided tour of your team's UNIX Shell. Run commands in the simulator below and watch, step by step, how the shell reads them, splits them, creates child processes with <code>fork()</code>, rewires their input and output, and waits for them. Every step points to the real line in <code>src/osh.c</code>.</p>
+</header>
+
+<nav class="toc"><div class="wrap">
+  <a href="#big"><span class="mn">1 · Ерөнхий зураг</span><span class="en">1 · Big picture</span></a>
+  <a href="#sim"><span class="mn">2 · Симулятор</span><span class="en">2 · Simulator</span></a>
+  <a href="#concepts"><span class="mn">3 · Гол syscall-ууд</span><span class="en">3 · Key syscalls</span></a>
+  <a href="#code"><span class="mn">4 · Кодын зураглал</span><span class="en">4 · Code map</span></a>
+  <a href="#modes"><span class="mn">5 · Ажиллуулах 2 горим</span><span class="en">5 · Two ways to run</span></a>
+  <a href="#gaps"><span class="mn">6 · Сайжруулах зүйлс</span><span class="en">6 · Gaps you could fix</span></a>
+  <a href="#quiz"><span class="mn">7 · Хамгаалалтын асуулт</span><span class="en">7 · Defense quiz</span></a>
+  <div class="navBtns">
+    <div class="langSw" role="group" aria-label="Language"><button data-lang="mn">MN</button><button data-lang="en">EN</button></div>
+    <button id="themeBtn" class="chip-btn" aria-label="Toggle theme">◐</button>
+  </div>
+</div></nav>
+
+<main class="wrap">
+
+<!-- 1. BIG PICTURE -->
+<section class="block" id="big">
+  <h2><span class="mn">1 · Ерөнхий зураг</span><span class="en">1 · The big picture</span></h2>
+  <p class="sub mn">Төсөл хоёр хэсэгтэй. <b>C shell</b> (<code>osh</code>) нь сурах бичгийн хэсэг. <b>Веб UI</b> нь багшийн нэмсэн "процессын мод" хэсэг. Хоёулаа жижиг лог файлаар дамжуулан харилцдаг. Хайрцаг бүр дээр дарж юу хийдгийг нь хараарай.</p>
+  <p class="sub en">The project has two halves. The <b>C shell</b> (<code>osh</code>) is the textbook part. The <b>web UI</b> is the teacher's "process tree" part. They talk through a small log file. Click each box to see what it does.</p>
+  <div class="arch" id="arch"></div>
+  <div class="flowline">
+    <div><span class="mn">та команд бичнэ →</span><span class="en">you type a command →</span></div>
+    <div>POST /api/run →</div>
+    <div><span class="mn">./osh -c "cmd" ажиллуулна →</span><span class="en">runs ./osh -c "cmd" →</span></div>
+    <div><span class="mn">osh процесс бүрт мөр нэмнэ →</span><span class="en">osh appends a line per process →</span></div>
+    <div><span class="mn">UI 2 сек тутам /api/events асууна ↺</span><span class="en">UI polls /api/events every 2 s ↺</span></div>
+  </div>
+  <div class="card archInfo" id="archInfo"></div>
+</section>
+
+<!-- 2. SIMULATOR -->
+<section class="block" id="sim">
+  <h2><span class="mn">2 · Алхам алхмаар симулятор</span><span class="en">2 · Step-by-step simulator</span></h2>
+  <p class="sub mn">Команд бичих эсвэл жишээ сонгоод <b>Ажиллуулах</b> товчийг дарна. Дараа нь <b>Дараах</b> товч эсвэл сумтай товчоор <code>osh</code>-ийн хийж буй үйлдлийг алхам алхмаар үзнэ. Файл, PID, гаралт нь зохиомол боловч алхмууд нь жинхэнэ кодыг яг дагадаг. Түүх нь ажиллуулалт хооронд хадгалагдана, тиймээс нэг команд ажиллуулаад дараа нь <code>!!</code> гэж туршаарай.</p>
+  <p class="sub en">Type a command, or pick an example, then press <b>Run</b>. Use <b>Next</b> or the arrow keys to walk through what <code>osh</code> does. The files, PIDs and output are pretend, but the steps follow the real code exactly. History carries over between runs, so try a command and then <code>!!</code>.</p>
+  <div class="card">
+    <div class="simTop">
+      <div class="cmdIn"><span>osh&gt;</span><input id="cmd" value="ls -l | wc -l" autocomplete="off" spellcheck="false" aria-label="Command"><button class="primary" id="runBtn"><span class="mn">Ажиллуулах ↵</span><span class="en">Run ↵</span></button></div>
+      <button id="resetBtn"><span class="mn">Шинээр эхлэх</span><span class="en">Reset</span></button>
+    </div>
+    <div class="examples" id="examples"></div>
+
+    <div class="stepBar">
+      <button id="prevBtn"><span class="mn">← Өмнөх</span><span class="en">← Prev</span></button>
+      <button id="nextBtn" class="primary"><span class="mn">Дараах →</span><span class="en">Next →</span></button>
+      <button id="playBtn"></button>
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <div class="simGrid">
+      <div>
+        <div class="stepHead"><span class="stepNum" id="stepNum"></span><span class="stepTitle" id="stepTitle"></span></div>
+        <div class="stepText" id="stepText"></div>
+        <div id="stepExtra"></div>
+        <div class="codeLabel" id="codeLabel"></div>
+        <div class="codeBox" id="codeBox"></div>
+      </div>
+      <div class="vis">
+        <div><h3><span class="mn">Процессын мод</span><span class="en">Process tree</span></h3><div class="tree" id="tree"></div><div id="pipeVis"></div></div>
+        <div><h3><span class="mn">Терминал</span><span class="en">Terminal</span></h3><div class="term" id="term"></div></div>
+        <div><h3><span class="mn">Үйл явдлын лог (UI үүнийг уншдаг)</span><span class="en">Event log (what the UI reads)</span></h3><div class="evlog" id="evlog"></div></div>
+        <div><h3><span class="mn">Хавтас доторх файлууд</span><span class="en">Files in the folder</span></h3><div class="files" id="files"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. CONCEPTS -->
+<section class="block" id="concepts">
+  <h2><span class="mn">3 · Shell-ийг бүтээдэг 6 систем дуудлага</span><span class="en">3 · The six system calls that make a shell</span></h2>
+  <p class="sub mn">Shell бүхэлдээ эдгээрээс бүтдэг. Карт бүрийг өөрийн үгээр тайлбарлаж чадвал төслөө хамгаалж чадна.</p>
+  <p class="sub en">The whole shell is built from these. If you can explain each card in your own words, you can defend the project.</p>
+  <div class="concepts" id="conceptGrid"></div>
+</section>
+
+<!-- 4. CODE MAP -->
+<section class="block" id="code">
+  <h2><span class="mn">4 · <code>src/osh.c</code>-ийн кодын зураглал</span><span class="en">4 · Code map of <code>src/osh.c</code></span></h2>
+  <p class="sub mn">Файл ойролцоогоор 400 мөр, 6 функцтэй. Аль нэгийг нь дарж энгийн тайлбартай нь уншаарай.</p>
+  <p class="sub en">The file is about 400 lines and has 6 functions. Click one to read it with a plain-English explanation.</p>
+  <div class="mapGrid">
+    <div class="fnList" id="fnList"></div>
+    <div class="card"><div id="fnInfo"></div><div class="codeBox" id="fnCode" style="max-height:420px"></div></div>
+  </div>
+</section>
+
+<!-- 5. MODES -->
+<section class="block" id="modes">
+  <h2><span class="mn">5 · Нэг программыг ажиллуулах 2 арга</span><span class="en">5 · Two ways to run the same program</span></h2>
+  <p class="sub mn"><code>main()</code> аргументуудаа шалгаад горимоо сонгоно. Веб UI болон тестүүд хоёр дахь горимыг ашигладаг тул энэ нь чухал.</p>
+  <p class="sub en"><code>main()</code> checks its arguments and picks a mode. This matters because the web UI and the tests use the second mode.</p>
+  <div class="two">
+    <div class="card">
+      <h3><span class="mn">Интерактив:</span><span class="en">Interactive:</span> <code>./osh</code></h3>
+      <p class="mn">Тасралтгүй давтана: <code>osh&gt;</code> хэвлэнэ, мөр уншина, ажиллуулна, дахин эхэлнэ. <code>exit</code> эсвэл Ctrl+D дээр дуусна. <code>previous</code> хувьсагч сүүлийн командыг хадгалдаг тул <code>!!</code> ажилладаг.</p>
+      <p class="en">Loops forever: print <code>osh&gt;</code>, read a line, run it, repeat. It ends on <code>exit</code> or Ctrl+D. The <code>previous</code> variable keeps the last command, so <code>!!</code> works.</p>
+      <div class="term">$ ./osh
+osh&gt; echo hi
+hi
+osh&gt; !!
+echo hi
+hi
+osh&gt; exit</div>
+    </div>
+    <div class="card">
+      <h3><span class="mn">Нэг удаагийн:</span><span class="en">One-shot:</span> <code>./osh -c "cmd"</code></h3>
+      <p class="mn">Яг нэг команд ажиллуулаад гарна. <code>server.py</code> <b>товч дарах бүрт шинэ osh процесс</b> эхлүүлдэг, <code>tests/test_shell.py</code> ч мөн адил. Ажиллуулалт бүр цоо шинэ процесс тул <code>previous</code> үргэлж хоосон байна.</p>
+      <p class="en">Runs exactly one command and quits. <code>server.py</code> starts a <b>new osh process for every click</b>, and <code>tests/test_shell.py</code> does the same. Because each run is a brand-new process, <code>previous</code> is always empty.</p>
+      <div class="term">$ ./osh -c "echo hi | wc -c"
+3
+$ ./osh -c "!!"
+<span class="err">No commands in history.</span></div>
+    </div>
+  </div>
+  <div class="callout warn" style="margin-top:12px">
+    <span class="mn"><b>Тэгвэл веб UI дээр <code>!!</code> яаж ажилладаг вэ?</b> C кодыг огт ашигладаггүй. <code>server.py</code> <code>HISTORY</code> нэртэй өөрийн Python жагсаалттай. Та <code>!!</code> илгээхэд сервер osh-ийг дуудахаасаа <i>өмнө</i> сүүлийн командаар сольчихдог. C-ийн түүхийн код зөвхөн интерактив горимд болон сүүлийн тестэд (жинхэнэ интерактив osh руу <code>echo first / !! / exit</code> оруулдаг) шалгагддаг.</span>
+    <span class="en"><b>So how does <code>!!</code> work in the web UI?</b> It doesn't use the C code at all. <code>server.py</code> keeps its own Python list called <code>HISTORY</code>. When you send <code>!!</code>, the server swaps in the last command <i>before</i> calling osh. The C history code only gets exercised in interactive mode and in the last test (which pipes <code>echo first / !! / exit</code> into a real interactive osh).</span>
+  </div>
+</section>
+
+<!-- 6. GAPS -->
+<section class="block" id="gaps">
+  <h2><span class="mn">6 · Мэдэж байх дутагдлууд (таны хийж болох ажлууд)</span><span class="en">6 · Gaps worth knowing (and possible tasks for you)</span></h2>
+  <p class="sub mn">Эдгээрийг кодыг уншиж байхдаа олсон. IV-2-8 багийн шүүмжлэгчид shell-ийг эвдэхийг оролдоно. Тиймээс эдгээр нь таны засаж болох ажил, эсвэл Manual-ын "Known issues" хэсэгт бичих хязгаарлалт юм.</p>
+  <p class="sub en">I found these by reading the code. Reviewers from IV-2-8 will try to break the shell, so each one is either a fix you could own or a limitation to put in the Manual's "Known issues".</p>
+  <div class="gaps card" id="gapList"></div>
+</section>
+
+<!-- 7. QUIZ -->
+<section class="block" id="quiz">
+  <h2><span class="mn">7 · Хамгаалалтын асуултууд</span><span class="en">7 · Defense quiz</span></h2>
+  <p class="sub mn">Багш эсвэл шүүмжлэгчийн асууж магадгүй асуултууд. Эхлээд толгойдоо хариулаад дараа нь картыг нээгээрэй.</p>
+  <p class="sub en">Questions a teacher or reviewer is likely to ask. Answer in your head first, then open the card.</p>
+  <div class="quiz" id="quizList"></div>
+</section>
+
+<footer>
+  <span class="mn">github.com/bulgaa777/II-4-1-UNIX-Shell-ийн <code>0d40676</code> commit дээр үндэслэв. Мөрийн дугаарууд тэр commit-ийн <code>src/osh.c</code>-ийг заана. Симулятор нь сургалтын загвар бөгөөд жинхэнэ команд ажиллуулдаггүй.</span>
+  <span class="en">Built from commit <code>0d40676</code> of github.com/bulgaa777/II-4-1-UNIX-Shell. Line numbers refer to <code>src/osh.c</code> in that commit. The simulator is a teaching model and doesn't run real commands.</span>
+</footer>
+</main>
+
+<script type="text/plain" id="oshSrc">
+#define _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <ctype.h>
+#include <time.h>
+
+#define MAXLINE 4096
+#define MAXARGS 128
+
+static char previous[MAXLINE] = "";
+static const char *eventfile;
+
+static void event_log(pid_t pid, pid_t parent,
+                      const char *state, const char *cmd) {
+    if (!eventfile || !*eventfile) return;
+
+    int fd = open(eventfile, O_WRONLY | O_CREAT | O_APPEND, 0600);
+    if (fd < 0) return;
+
+    char buf[8192];
+    int n = snprintf(buf, sizeof(buf),
+        "%ld\t%ld\t%ld\t%s\t%s\n",
+        (long)time(NULL), (long)pid, (long)parent, state, cmd);
+
+    if (n > 0 && n < (int)sizeof(buf))
+        (void)write(fd, buf, (size_t)n);
+
+    close(fd);
+}
+
+static void release(char **args, int count) {
+    for (int i = 0; i < count; i++)
+        free(args[i]);
+}
+
+static int tokenize(const char *p, char **args) {
+    int n = 0;
+
+    while (*p) {
+        while (isspace((unsigned char)*p)) p++;
+        if (!*p) break;
+
+        if (n >= MAXARGS - 1) goto bad;
+
+        char token[MAXLINE];
+        size_t j = 0;
+        char quote = 0;
+
+        if (strchr("|<>&", *p)) {
+            token[j++] = *p++;
+        } else {
+            while (*p) {
+                if (!quote &&
+                    (isspace((unsigned char)*p) ||
+                     strchr("|<>&", *p)))
+                    break;
+
+                if (*p == '\'' || *p == '"') {
+                    if (!quote) {
+                        quote = *p++;
+                        continue;
+                    }
+                    if (quote == *p) {
+                        quote = 0;
+                        p++;
+                        continue;
+                    }
+                }
+
+                if (*p == '\\' && p[1] && quote != '\'') {
+                    p++;
+                    if (quote == '"' &&
+                        *p != '"' && *p != '\\' &&
+                        *p != '$' && *p != '`') {
+                        if (j >= MAXLINE - 1) goto bad;
+                        token[j++] = '\\';
+                    }
+                }
+
+                if (j >= MAXLINE - 1) goto bad;
+                token[j++] = *p++;
+            }
+        }
+
+        if (quote) {
+            fprintf(stderr, "Unclosed quote\n");
+            goto bad;
+        }
+
+        token[j] = '\0';
+        args[n] = strdup(token);
+        if (!args[n]) goto bad;
+        n++;
+    }
+
+    args[n] = NULL;
+    return n;
+
+bad:
+    fprintf(stderr, "Invalid command or too many arguments\n");
+    release(args, n);
+    return -1;
+}
+
+static void reap_background(void) {
+    int status;
+    pid_t pid;
+
+    while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
+        event_log(pid, getpid(),
+            WIFEXITED(status) && WEXITSTATUS(status) == 0
+                ? "completed" : "failed",
+            "background");
+    }
+}
+
+static int execute(const char *line) {
+    char *args[MAXARGS] = {0};
+    char *left[MAXARGS] = {0};
+    char *right[MAXARGS] = {0};
+
+    int total = tokenize(line, args);
+    if (total < 0) return 2;
+    if (total == 0) return 0;
+
+    int n = total;
+    int result = 0;
+    int background = 0;
+    int pipe_seen = 0;
+    int l = 0, r = 0;
+
+    char *infile = NULL;
+    char *outfile = NULL;
+
+    if (!strcmp(args[n - 1], "&")) {
+        background = 1;
+        n--;
+    }
+
+    if (n == 0) {
+        fprintf(stderr, "Missing command\n");
+        result = 2;
+        goto cleanup;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (!strcmp(args[i], "|")) {
+            if (pipe_seen || !l) {
+                fprintf(stderr, "Invalid pipe\n");
+                result = 2;
+                goto cleanup;
+            }
+            pipe_seen = 1;
+            continue;
+        }
+
+        if (!strcmp(args[i], "<") ||
+            !strcmp(args[i], ">")) {
+
+            int input = !strcmp(args[i], "<");
+
+            if (i + 1 >= n ||
+                strchr("|<>&", args[i + 1][0])) {
+                fprintf(stderr, "Missing redirection filename\n");
+                result = 2;
+                goto cleanup;
+            }
+
+            if ((input && infile) ||
+                (!input && outfile)) {
+                fprintf(stderr, "Duplicate redirection\n");
+                result = 2;
+                goto cleanup;
+            }
+
+            if (input)
+                infile = args[++i];
+            else
+                outfile = args[++i];
+
+            continue;
+        }
+
+        if (!strcmp(args[i], "&")) {
+            fprintf(stderr, "& must be last\n");
+            result = 2;
+            goto cleanup;
+        }
+
+        if (!pipe_seen)
+            left[l++] = args[i];
+        else
+            right[r++] = args[i];
+    }
+
+    left[l] = NULL;
+    right[r] = NULL;
+
+    if (!l || (pipe_seen && !r)) {
+        fprintf(stderr, "Missing command\n");
+        result = 2;
+        goto cleanup;
+    }
+
+    int count = pipe_seen ? 2 : 1;
+    int fds[2] = {-1, -1};
+    pid_t pids[2] = {-1, -1};
+    int started = 0;
+
+    if (count == 2 && pipe(fds) != 0) {
+        perror("pipe");
+        result = 1;
+        goto cleanup;
+    }
+
+    for (int k = 0; k < count; k++) {
+        pid_t pid = fork();
+
+        if (pid < 0) {
+            perror("fork");
+            result = 1;
+            break;
+        }
+
+        if (pid == 0) {
+            if (count == 2) {
+                if (dup2(
+                    k == 0 ? fds[1] : fds[0],
+                    k == 0 ? STDOUT_FILENO : STDIN_FILENO
+                ) < 0) _exit(1);
+
+                close(fds[0]);
+                close(fds[1]);
+            }
+
+            if (k == 0 && infile) {
+                int fd = open(infile, O_RDONLY);
+
+                if (fd < 0) {
+                    perror(infile);
+                    _exit(1);
+                }
+
+                if (dup2(fd, STDIN_FILENO) < 0)
+                    _exit(1);
+
+                close(fd);
+            }
+
+            if (k == count - 1 && outfile) {
+                int fd = open(outfile,
+                    O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+                if (fd < 0) {
+                    perror(outfile);
+                    _exit(1);
+                }
+
+                if (dup2(fd, STDOUT_FILENO) < 0)
+                    _exit(1);
+
+                close(fd);
+            }
+
+            char **cmd = k == 0 ? left : right;
+            execvp(cmd[0], cmd);
+            perror(cmd[0]);
+            _exit(127);
+        }
+
+        pids[started++] = pid;
+        event_log(pid, getpid(), "running", line);
+    }
+
+    if (count == 2) {
+        close(fds[0]);
+        close(fds[1]);
+    }
+
+    if (started == count && background) {
+        printf("[background] PID %ld\n", (long)pids[0]);
+        fflush(stdout);
+        goto cleanup;
+    }
+
+    for (int k = 0; k < started; k++) {
+        int st = 0;
+
+        if (waitpid(pids[k], &st, 0) >= 0) {
+            int code = WIFEXITED(st)
+                ? WEXITSTATUS(st)
+                : WIFSIGNALED(st)
+                    ? 128 + WTERMSIG(st) : 1;
+
+            event_log(pids[k], getpid(),
+                code == 0 ? "completed" : "failed",
+                line);
+
+            if (k == started - 1 && result == 0)
+                result = code;
+        }
+    }
+
+cleanup:
+    release(args, total);
+    return result;
+}
+
+int main(int argc, char **argv) {
+    eventfile = getenv("OSH_EVENTS");
+
+    int single = argc == 3 &&
+                 !strcmp(argv[1], "-c");
+
+    if (argc > 1 && !single) {
+        fprintf(stderr,
+            "Usage: %s [-c command]\n", argv[0]);
+        return 2;
+    }
+
+    char *line = NULL;
+    size_t capacity = 0;
+    int result = 0;
+
+    for (;;) {
+        reap_background();
+
+        if (single) {
+            line = strdup(argv[2]);
+            if (!line) return 1;
+        } else {
+            printf("osh> ");
+            fflush(stdout);
+
+            if (getline(&line, &capacity, stdin) < 0)
+                break;
+        }
+
+        line[strcspn(line, "\r\n")] = '\0';
+
+        if (!strcmp(line, "exit"))
+            break;
+
+        if (!strcmp(line, "!!")) {
+            if (!previous[0]) {
+                fprintf(stderr,
+                    "No commands in history.\n");
+                result = 2;
+
+                if (single) break;
+                continue;
+            }
+
+            char *copy = strdup(previous);
+
+            if (!copy) {
+                result = 1;
+                break;
+            }
+
+            if (single) {
+                free(line);
+                line = copy;
+            } else {
+                size_t len = strlen(copy) + 1;
+
+                if (capacity < len) {
+                    char *resized = realloc(line, len);
+
+                    if (!resized) {
+                        free(copy);
+                        result = 1;
+                        break;
+                    }
+
+                    line = resized;
+                    capacity = len;
+                }
+
+                memcpy(line, copy, len);
+                free(copy);
+            }
+
+            printf("%s\n", line);
+            fflush(stdout);
+        } else if (*line) {
+            snprintf(previous, sizeof(previous),
+                     "%s", line);
+        }
+
+        if (*line)
+            result = execute(line);
+
+        if (single) break;
+    }
+
+    free(line);
+    return result;
+}
+</script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Bilingual HTML: both versions are rendered, CSS shows the one matching <html lang>.
+const B=(en,mn)=>`<span class="en">${en}</span><span class="mn">${mn}</span>`;
+const SRC=$('oshSrc').textContent.replace(/\r/g,'').replace(/^\n/,'').split('\n');
+// Line numbers as in the repo (the file starts with one empty line)
+const LINES=[''].concat(SRC);
+
+/* language */
+(function(){
+  const root=document.documentElement;
+  let lang='mn';
+  try{const l=localStorage.getItem('osh-lang');if(l==='en'||l==='mn')lang=l;}catch(e){}
+  const set=l=>{root.lang=l;document.querySelectorAll('.langSw button').forEach(b=>b.classList.toggle('on',b.dataset.lang===l));try{localStorage.setItem('osh-lang',l);}catch(e){}};
+  document.querySelectorAll('.langSw button').forEach(b=>b.onclick=()=>set(b.dataset.lang));
+  set(lang);
+})();
+
+/* theme */
+(function(){
+  const root=document.documentElement;
+  try{const t=localStorage.getItem('osh-theme');if(t)root.setAttribute('data-theme',t);}catch(e){}
+  $('themeBtn').onclick=()=>{
+    const dark=root.getAttribute('data-theme')?root.getAttribute('data-theme')==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+    const n=dark?'light':'dark';root.setAttribute('data-theme',n);
+    try{localStorage.setItem('osh-theme',n);}catch(e){}
+  };
+})();
+
+function renderCode(box,from,to,hlFrom,hlTo,ctx){
+  ctx=ctx===undefined?3:ctx;
+  const a=Math.max(1,from-ctx),b=Math.min(LINES.length-1,to+ctx);
+  let h='';
+  for(let i=a;i<=b;i++){
+    const on=i>=hlFrom&&i<=hlTo;
+    h+=`<div class="ln${on?' hl':''}" data-l="${i}"><span class="n">${i}</span>${esc(LINES[i]||' ')}</div>`;
+  }
+  box.innerHTML=h;
+  const first=box.querySelector('.hl');
+  if(first)box.scrollTop=Math.max(0,first.offsetTop-box.offsetTop-40);
+}
+
+/* ---------- 1. Big picture ---------- */
+const ARCH=[
+ {ic:'🖥️',t:B('Browser UI','Хөтөч дээрх UI'),f:'ui/index.html',d:B(
+  `<p>A single web page with a terminal box, example buttons, a <b>Process tree</b> panel and a <b>Command history</b> panel.</p><p>When you press Run it sends <code>POST /api/run {"command": "..."}</code>. Every 2 seconds it calls <code>GET /api/events</code> and redraws the tree from what comes back. "Reset view" only hides the PIDs it has already seen. It doesn't delete anything.</p><p>The tree it draws has two levels: an <b>osh</b> parent node, with each command's children under it. A new osh process starts for every command, so each command gets its own parent node.</p>`,
+  `<p>Терминалын хайрцаг, жишээ товчнууд, <b>Process tree</b> болон <b>Command history</b> самбартай ганц веб хуудас.</p><p>Run дарахад <code>POST /api/run {"command": "..."}</code> илгээнэ. 2 секунд тутам <code>GET /api/events</code> дуудаж, ирсэн өгөгдлөөс модоо дахин зурна. "Reset view" нь өмнө харсан PID-үүдийг зөвхөн нуудаг, юу ч устгадаггүй.</p><p>Зурдаг мод нь 2 түвшинтэй: <b>osh</b> эцэг зангилаа, доор нь тухайн командын хүүхдүүд. Команд бүрт шинэ osh процесс эхэлдэг тул команд бүр өөрийн эцэг зангилаатай болно.</p>`)},
+ {ic:'🐍',t:B('Python server','Python сервер'),f:'ui/server.py',d:B(
+  `<p>A tiny HTTP server on <code>127.0.0.1:8765</code> (local only, since it runs whatever you type).</p><p><code>/api/run</code> handles <code>!!</code> and <code>exit</code> itself, saves the command to its own <code>HISTORY</code> list, then runs:</p><pre class="mono">subprocess.run(["./osh", "-c", cmd], env={OSH_EVENTS: &lt;temp file&gt;}, timeout=6)</pre><p><code>/api/events</code> reads the event file, keeps only the <b>latest line per PID</b>, and returns the last 50, plus the last 15 history entries.</p>`,
+  `<p><code>127.0.0.1:8765</code> дээрх жижиг HTTP сервер. Таны бичсэн бүхнийг ажиллуулдаг тул зөвхөн локал.</p><p><code>/api/run</code> нь <code>!!</code> болон <code>exit</code>-ийг өөрөө шийдэж, командыг өөрийн <code>HISTORY</code> жагсаалтад хадгалаад дараахыг ажиллуулна:</p><pre class="mono">subprocess.run(["./osh", "-c", cmd], env={OSH_EVENTS: &lt;түр файл&gt;}, timeout=6)</pre><p><code>/api/events</code> нь event файлыг уншиж, <b>PID бүрийн хамгийн сүүлийн мөрийг</b> л үлдээгээд сүүлийн 50-ийг, мөн түүхийн сүүлийн 15-ыг буцаана.</p>`)},
+ {ic:'🐚',t:B('osh (C shell)','osh (C shell)'),f:'src/osh.c',d:B(
+  `<p>The textbook project. It tokenizes the line, finds <code>|</code>, <code>&lt;</code>, <code>&gt;</code> and <code>&amp;</code>, then uses <code>fork()</code> → <code>dup2()</code> → <code>execvp()</code> to run the program, and <code>waitpid()</code> to wait for it.</p><p>It works fine on its own in a terminal. The UI is just one extra way to drive it.</p>`,
+  `<p>Сурах бичгийн төсөл. Мөрийг үгэнд хувааж, <code>|</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code>-ийг олоод <code>fork()</code> → <code>dup2()</code> → <code>execvp()</code>-ээр программыг ажиллуулж, <code>waitpid()</code>-ээр хүлээнэ.</p><p>Терминал дээр дангаараа бүрэн ажилладаг. UI бол түүнийг удирдах нэмэлт нэг арга л юм.</p>`)},
+ {ic:'📝',t:B('Event file','Event файл'),f:'$OSH_EVENTS (.tsv)',d:B(
+  `<p>This is the bridge between C and the UI. If the <code>OSH_EVENTS</code> environment variable is set, <code>event_log()</code> appends one tab-separated line every time a child is <b>started</b> and again when it <b>finishes</b>:</p><pre class="mono">time    pid   ppid  state      command
+1761578400  4101  4100  running    ls -l | wc -l
+1761578400  4101  4100  completed  ls -l | wc -l</pre><p>Run osh without that variable (normal terminal use) and nothing is logged.</p>`,
+  `<p>C болон UI-г холбодог гүүр. <code>OSH_EVENTS</code> орчны хувьсагч тохируулагдсан бол хүүхэд процесс <b>эхлэх</b> болон <b>дуусах</b> бүрт <code>event_log()</code> таб-аар тусгаарласан нэг мөр нэмнэ:</p><pre class="mono">time    pid   ppid  state      command
+1761578400  4101  4100  running    ls -l | wc -l
+1761578400  4101  4100  completed  ls -l | wc -l</pre><p>Тэр хувьсагчгүйгээр (ердийн терминалд) ажиллуулбал юу ч бичигдэхгүй.</p>`)},
+ {ic:'🌳',t:B('Process tree','Процессын мод'),f:B('what you see','таны харах зүйл'),d:B(
+  `<p>The server groups events by <code>ppid</code> (the parent). Each osh parent becomes a purple root node, and its children are listed under it with their state: <span class="st running" style="font-size:11px;padding:1px 7px;border-radius:9px">running</span> <span class="st done" style="font-size:11px;padding:1px 7px;border-radius:9px">completed</span> <span class="st failed" style="font-size:11px;padding:1px 7px;border-radius:9px">failed</span>.</p><p>A pipe like <code>ls | wc</code> shows <b>two</b> children under one osh, because the shell forks once per side of the pipe.</p>`,
+  `<p>Event-үүдийг <code>ppid</code> (эцэг процесс)-ээр нь бүлэглэнэ. osh эцэг бүр нил ягаан үндэс зангилаа болж, хүүхдүүд нь төлөвтэйгээ доор нь жагсана: <span class="st running" style="font-size:11px;padding:1px 7px;border-radius:9px">running</span> <span class="st done" style="font-size:11px;padding:1px 7px;border-radius:9px">completed</span> <span class="st failed" style="font-size:11px;padding:1px 7px;border-radius:9px">failed</span>.</p><p><code>ls | wc</code> шиг pipe нэг osh дор <b>хоёр</b> хүүхэд харуулна, учир нь shell pipe-ийн тал бүрт нэг fork хийдэг.</p>`)}
+];
+(function(){
+  const el=$('arch');
+  el.innerHTML=ARCH.map((a,i)=>`<button class="box" data-i="${i}"><div class="ic">${a.ic}</div><div class="t">${a.t}</div><div class="f mono">${a.f}</div></button>`).join('');
+  const show=i=>{el.querySelectorAll('.box').forEach((b,j)=>b.classList.toggle('on',i===j));$('archInfo').innerHTML=`<h3><span class="pulse"></span>${ARCH[i].t} <span class="mono" style="font-weight:400;color:var(--muted);font-size:13px">${ARCH[i].f}</span></h3>${ARCH[i].d}`;};
+  el.onclick=e=>{const b=e.target.closest('.box');if(b)show(+b.dataset.i);};
+  show(2);
+})();
+
+/* ---------- 2. Simulator ---------- */
+const CWD='/home/student/II-4-1-UNIX-Shell';
+const BASE_FILES={'Makefile':'CC=cc\nCFLAGS=-std=c11 -Wall -Wextra -O2\n','README.md':'# II-4-1 — UNIX Shell\n','docs':null,'osh':'\x7fELF (compiled program)','.gitignore':'*.o\n','src':null,'tests':null,'ui':null,'names.txt':'Tuvshin\nAnu\nBat\nZaya\nBat\n'};
+let FS={},history='',nextPid=4101,clock=1761578400,evAll=[];
+function resetWorld(){FS=JSON.parse(JSON.stringify(BASE_FILES));history='';nextPid=4101;evAll=[];}
+resetWorld();
+
+// Mirrors tokenize() in osh.c (quotes, backslash, | < > & as single tokens)
+function tokenize(p){
+  const out=[];let i=0;
+  while(i<p.length){
+    while(i<p.length&&/\s/.test(p[i]))i++;
+    if(i>=p.length)break;
+    if('|<>&'.includes(p[i])){out.push(p[i]);i++;continue;}
+    let tok='',q='';
+    while(i<p.length){
+      const c=p[i];
+      if(!q&&(/\s/.test(c)||'|<>&'.includes(c)))break;
+      if(c==="'"||c==='"'){
+        if(!q){q=c;i++;continue;}
+        if(q===c){q='';i++;continue;}
+      }
+      if(c==='\\'&&i+1<p.length&&q!=="'"){i++;if(q==='"'&&!'"\\$`'.includes(p[i]))tok+='\\';}
+      tok+=p[i];i++;
+    }
+    if(q)return {error:'Unclosed quote',tokens:out};
+    out.push(tok);
+  }
+  return {tokens:out};
+}
+// Mirrors the parsing loop in execute()
+function parse(tokens){
+  const r={tokens,roles:tokens.map(()=>''),left:[],right:[],infile:null,outfile:null,bg:false,pipe:false,error:null,errLine:null};
+  let n=tokens.length;
+  if(n&&tokens[n-1]==='&'){r.bg=true;r.roles[n-1]='amp';n--;}
+  if(n===0){r.error='Missing command';r.errLine=[146,150];return r;}
+  for(let i=0;i<n;i++){
+    const t=tokens[i];
+    if(t==='|'){
+      if(r.pipe||!r.left.length){r.error='Invalid pipe';r.errLine=[153,158];r.roles[i]='bad';return r;}
+      r.pipe=true;r.roles[i]='pipe';continue;
+    }
+    if(t==='<'||t==='>'){
+      const input=t==='<';
+      if(i+1>=n||'|<>&'.includes(tokens[i+1][0])){r.error='Missing redirection filename';r.errLine=[168,173];r.roles[i]='bad';return r;}
+      if((input&&r.infile)||(!input&&r.outfile)){r.error='Duplicate redirection';r.errLine=[175,180];r.roles[i]='bad';return r;}
+      r.roles[i]='redir';r.roles[i+1]='file';
+      if(input)r.infile=tokens[++i];else r.outfile=tokens[++i];
+      continue;
+    }
+    if(t==='&'){r.error='& must be last';r.errLine=[190,194];r.roles[i]='bad';return r;}
+    if(!r.pipe){r.left.push(t);r.roles[i]='cmd';}else{r.right.push(t);r.roles[i]='cmd2';}
+  }
+  if(!r.left.length||(r.pipe&&!r.right.length)){r.error='Missing command';r.errLine=[205,209];}
+  return r;
+}
+
+// Pretend programs. Return {out, err, code, ms}
+function fakeExec(argv,stdin){
+  const [p,...a]=argv;
+  const fileText=f=>FS[f];
+  const lines=s=>s===''?[]:s.replace(/\n$/,'').split('\n');
+  switch(p){
+    case 'echo':{let nl=true;if(a[0]==='-n'){nl=false;a.shift();}return{out:a.join(' ')+(nl?'\n':''),code:0};}
+    case 'pwd':return{out:CWD+'\n',code:0};
+    case 'whoami':return{out:'student\n',code:0};
+    case 'date':return{out:'Tue Oct 27 16:00:00 +08 2026\n',code:0};
+    case 'true':return{out:'',code:0};
+    case 'false':return{out:'',code:1};
+    case 'ls':{
+      const names=Object.keys(FS).sort();
+      if(a.includes('-l'))return{out:'total '+names.length+'\n'+names.map(n=>(FS[n]===null?'drwxr-xr-x':'-rw-r--r--')+' 1 student student '+String(FS[n]===null?4096:FS[n].length).padStart(5)+' Oct 27 16:00 '+n).join('\n')+'\n',code:0};
+      return{out:names.join('\n')+'\n',code:0};
+    }
+    case 'cat':{
+      if(!a.length)return{out:stdin||'',code:0};
+      let o='';for(const f of a){if(fileText(f)===undefined)return{out:o,err:`cat: ${f}: No such file or directory\n`,code:1};if(fileText(f)===null)return{out:o,err:`cat: ${f}: Is a directory\n`,code:1};o+=fileText(f);}return{out:o,code:0};
+    }
+    case 'sort':{
+      let src=stdin||'';const f=a.find(x=>!x.startsWith('-'));if(f){if(FS[f]==null)return{out:'',err:`sort: cannot read: ${f}: No such file or directory\n`,code:2};src=FS[f];}
+      let l=lines(src).sort();if(a.includes('-r'))l.reverse();return{out:l.length?l.join('\n')+'\n':'',code:0};
+    }
+    case 'uniq':{const l=lines(stdin||'');return{out:l.filter((x,i)=>i===0||x!==l[i-1]).join('\n')+(l.length?'\n':''),code:0};}
+    case 'wc':{
+      let src=stdin||'';const f=a.find(x=>!x.startsWith('-'));if(f){if(FS[f]==null)return{out:'',err:`wc: ${f}: No such file or directory\n`,code:1};src=FS[f];}
+      const L=(src.match(/\n/g)||[]).length,W=(src.trim()?src.trim().split(/\s+/).length:0),C=new TextEncoder().encode(src).length;
+      let o;if(a.includes('-l'))o=L;else if(a.includes('-w'))o=W;else if(a.includes('-c'))o=C;else o=`      ${L}       ${W}      ${C}`;
+      return{out:o+(f&&typeof o==='number'?' '+f:'')+'\n',code:0};
+    }
+    case 'head':case 'tail':{const k=a[0]==='-n'?+a[1]:(a[0]&&/^-\d+$/.test(a[0])?+a[0].slice(1):10);const l=lines(stdin||'');const s=p==='head'?l.slice(0,k):l.slice(-k);return{out:s.length?s.join('\n')+'\n':'',code:0};}
+    case 'grep':{if(!a.length)return{out:'',err:'Usage: grep PATTERN\n',code:2};const l=lines(stdin||'').filter(x=>x.includes(a[0]));return{out:l.length?l.join('\n')+'\n':'',code:l.length?0:1};}
+    case 'tr':{if(a.length<2)return{out:'',err:'tr: missing operand\n',code:1};if(a[0]==='a-z'&&a[1]==='A-Z')return{out:(stdin||'').toUpperCase(),code:0};return{out:stdin||'',code:0};}
+    case 'sleep':{const s=parseFloat(a[0]);if(isNaN(s))return{out:'',err:'sleep: missing operand\n',code:1};return{out:'',code:0,ms:s*1000};}
+    case 'ps':return{out:'    PID TTY          TIME CMD\n   4000 pts/0    00:00:00 bash\n   4100 pts/0    00:00:00 osh\n   '+(nextPid-1)+' pts/0    00:00:00 ps\n',code:0};
+    default:return{notfound:true,code:127};
+  }
+}
+
+const STATE_LBL={
+  running:B('running','ажиллаж байна'),
+  forked:B('forked: copy of osh','fork хийгдсэн: osh-ийн хуулбар'),
+  waiting:B('waiting in waitpid()','waitpid()-д хүлээж байна'),
+  zombie:B('zombie: exited, not reaped yet','zombie: дууссан, цуглуулаагүй'),
+  done:B('exited 0','0-ээр дууссан'),
+  failed:B('failed','амжилтгүй'),
+  reaped:B('reaped (gone)','цуглуулсан (алга болсон)'),
+  ready:B('reading input','оролт уншиж байна'),
+  working:B('inside execute()','execute() дотор')
+};
+const FD_LBL={'keyboard':B('keyboard','гар'),'screen':B('screen','дэлгэц'),'pipe read end':B('pipe read end','pipe унших үзүүр'),'pipe write end':B('pipe write end','pipe бичих үзүүр')};
+const fdLabel=v=>v.startsWith('file ')?B('file ','файл ')+esc(v.slice(5)):(FD_LBL[v]||esc(v));
+const ROLE_LBL={cmd:B('cmd 1','команд 1'),cmd2:B('cmd 2','команд 2'),pipe:'pipe',redir:B('redirect','чиглүүлэх'),file:B('file','файл'),amp:'background',bad:B('error','алдаа')};
+
+// Build all steps for one command line.
+function buildSteps(raw){
+  const steps=[];
+  const S={procs:[{pid:4100,name:'osh',state:'ready',fd:{0:'keyboard',1:'screen',2:'screen'},kids:[]}],term:[],ev:evAll.slice(),newEv:0,pipe:null,files:null,newFiles:[]};
+  const snap=()=>JSON.parse(JSON.stringify(S));
+  const push=(o)=>{steps.push(Object.assign({state:snap()},o));S.newEv=0;S.newFiles=[];};
+  const osh=()=>S.procs[0];
+  const log=(pid,state,cmd)=>{const l=`${clock}\t${pid}\t4100\t${state}\t${cmd}`;S.ev.push(l);S.newEv++;};
+  let line=raw.replace(/[\r\n]/g,'');
+  S.term.push({t:'osh> '+line});
+  push({title:B('Print the prompt and read a line','Prompt хэвлээд мөр унших'),code:[331,345],
+    text:B(`<code>main()</code> runs an endless <code>for(;;)</code> loop. First it calls <code>reap_background()</code> to clean up any finished background jobs. Then it prints <code>osh&gt; </code>, and <code>getline()</code> waits until you press Enter. The trailing newline is cut off on line 345.`,
+           `<code>main()</code> төгсгөлгүй <code>for(;;)</code> давталт ажиллуулдаг. Эхлээд дууссан background ажлуудыг цэвэрлэхийн тулд <code>reap_background()</code>-ийг дуудна. Дараа нь <code>osh&gt; </code> хэвлээд <code>getline()</code> таныг Enter дарахыг хүлээнэ. Мөрийн төгсгөлийн шинэ мөрийн тэмдгийг 345-р мөрөнд тасалж авна.`),
+    analogy:B('Like a waiter who comes back to the table again and again, asking "what next?"','Яг л ширээн дээр дахин дахин ирээд "өөр юу авах вэ?" гэж асуудаг зөөгч шиг.')});
+
+  if(line==='exit'){
+    push({title:B('exit → leave the loop','exit → давталтаас гарах'),code:[347,348],
+      text:B('If the line is exactly <code>exit</code>, the loop breaks, <code>line</code> is freed and <code>main</code> returns. That ends the shell process.',
+             'Мөр яг <code>exit</code> бол давталт таслагдаж, <code>line</code> чөлөөлөгдөөд <code>main</code> буцна. Ингэснээр shell процесс дуусна.')});
+    return {steps,commit:()=>{}};
+  }
+  if(line==='!!'){
+    if(!history){
+      S.term.push({t:'No commands in history.',err:true});
+      push({title:B('!! with empty history → error','Түүх хоосон үед !! → алдаа'),code:[350,358],bad:true,
+        text:B('<code>previous</code> is still an empty string, so osh prints <code>No commands in history.</code> to <b>stderr</b> and goes back to the prompt with <code>continue</code>. Nothing is forked.',
+               '<code>previous</code> хоосон мөр хэвээр байгаа тул osh <b>stderr</b> руу <code>No commands in history.</code> гэж хэвлээд <code>continue</code>-ээр prompt руу буцна. Ямар ч fork хийгдэхгүй.')});
+      return {steps,commit:()=>{}};
+    }
+    line=history;
+    S.term.push({t:line,dim:true});
+    push({title:B('!! → replay the previous command','!! → өмнөх командыг дахин ажиллуулах'),code:[350,391],
+      text:B(`<code>previous</code> holds <code>${esc(history)}</code>. osh copies it into <code>line</code> (growing the buffer with <code>realloc</code> if it's too small), then <b>prints it</b> so you can see what is about to run, as the textbook requires. From here on it's handled exactly like a typed command. Note that <code>!!</code> itself is never saved to history.`,
+             `<code>previous</code> дотор <code>${esc(history)}</code> байна. osh үүнийг <code>line</code> руу хуулна (буфер багадвал <code>realloc</code>-оор томсгоно). Дараа нь сурах бичгийн шаардлагын дагуу юу ажиллах гэж байгааг харуулахын тулд <b>хэвлэнэ</b>. Цаашдаа яг бичсэн команд шиг боловсруулагдана. <code>!!</code> өөрөө түүхэнд хэзээ ч хадгалагддаггүйг анхаараарай.`)});
+  }else if(line){
+    push({title:B('Remember it for !!','!!-д зориулж хадгалах'),code:[392,395],
+      text:B(`Any non-empty line other than <code>!!</code> is copied into the global <code>previous</code> buffer with <code>snprintf</code>. That single string is the whole "history". The textbook only asks for the most recent command.`,
+             `<code>!!</code>-ээс бусад хоосон биш мөр бүрийг <code>snprintf</code>-ээр глобал <code>previous</code> буфер руу хуулна. Энэ ганц мөр л бүх "түүх" юм. Сурах бичиг зөвхөн хамгийн сүүлийн командыг шаарддаг.`),
+      extra:`<div class="parsed"><b>previous =</b><span class="mono">"${esc(line)}"</span></div>`});
+  }
+  const newHistory=line||history;
+
+  if(!line){push({title:B('Empty line → nothing to do','Хоосон мөр → хийх зүйлгүй'),code:[397,398],text:B('An empty line skips <code>execute()</code> and goes straight back to the prompt.','Хоосон мөр <code>execute()</code>-ийг алгасаад шууд prompt руу буцна.')});return{steps,commit:()=>{}};}
+
+  // tokenize
+  const tk=tokenize(line);
+  if(tk.error){
+    S.term.push({t:'Unclosed quote',err:true},{t:'Invalid command or too many arguments',err:true});
+    push({title:B('Tokenize → unclosed quote','Tokenize → хаагдаагүй хашилт'),code:[91,108],bad:true,
+      text:B('A quote was opened but never closed. <code>tokenize()</code> prints two error lines, frees the tokens it had made and returns -1. <code>execute()</code> then returns 2 without forking anything.',
+             'Хашилт нээгдсэн ч хаагдаагүй байна. <code>tokenize()</code> хоёр мөр алдаа хэвлээд, үүсгэсэн token-уудаа чөлөөлж, -1 буцаана. Дараа нь <code>execute()</code> юу ч fork хийлгүйгээр 2 буцаана.')});
+    return {steps,commit:()=>{history=newHistory;}};
+  }
+  const P=parse(tk.tokens);
+  const chips=(roles)=>`<div class="tokens">${P.tokens.map((t,i)=>`<span class="tok ${roles?P.roles[i]:''}">${esc(t)}${roles?`<small>${ROLE_LBL[P.roles[i]]||''}</small>`:`<small>[${i}]</small>`}</span>`).join('')}</div>`;
+  push({title:B('Tokenize: split the line into words','Tokenize: мөрийг үгэнд хуваах'),code:[42,109],
+    text:B(`<code>tokenize()</code> walks the string one character at a time. Spaces separate words. <code>| &lt; &gt; &amp;</code> always become their own token, even with no spaces around them. Quotes keep spaces inside a word. Each word is copied with <code>strdup</code> into <code>args[]</code>, and the list ends with <code>NULL</code>.`,
+           `<code>tokenize()</code> мөрийг нэг нэг тэмдэгтээр нь гүйнэ. Хоосон зай үгсийг тусгаарлана. <code>| &lt; &gt; &amp;</code> нь эргэн тойрондоо зайгүй байсан ч үргэлж тусдаа token болно. Хашилт доторх зай үгийн нэг хэсэг хэвээр үлдэнэ. Үг бүрийг <code>strdup</code>-ээр <code>args[]</code> руу хуулж, жагсаалтыг <code>NULL</code>-ээр төгсгөнө.`),
+    extra:chips(false)});
+
+  if(P.error){
+    S.term.push({t:P.error,err:true});
+    push({title:B('Parse → ','Задлах → ')+esc(P.error),code:P.errLine,bad:true,
+      text:B(`The parser in <code>execute()</code> found a problem and prints <code>${esc(P.error)}</code>. It returns 2 without calling <code>fork()</code>, so no child process is created. This is the "clear error message" the assignment asks for.`,
+             `<code>execute()</code> доторх задлагч асуудал олоод <code>${esc(P.error)}</code> гэж хэвлэнэ. <code>fork()</code> дуудалгүйгээр 2 буцаадаг тул хүүхэд процесс үүсэхгүй. Даалгаварт шаардсан "ойлгомжтой алдааны мэдээлэл" нь энэ юм.`),
+      extra:chips(true)});
+    return {steps,commit:()=>{history=newHistory;}};
+  }
+  const desc=[];
+  desc.push(`<b>${B('cmd 1','команд 1')} (left[])</b><span class="mono">${esc(P.left.join(' '))}</span>`);
+  if(P.pipe)desc.push(`<b>${B('cmd 2','команд 2')} (right[])</b><span class="mono">${esc(P.right.join(' '))}</span>`);
+  if(P.infile)desc.push(`<b>infile</b><span class="mono">${esc(P.infile)}</span>`);
+  if(P.outfile)desc.push(`<b>outfile</b><span class="mono">${esc(P.outfile)}</span>`);
+  desc.push(`<b>background</b><span>${P.bg?B('yes (ends with &amp;)','тийм (&amp;-ээр төгссөн)'):B('no','үгүй')}</span>`);
+  push({title:B('Parse: sort the tokens into roles','Задлах: token-уудыг үүргээр нь ангилах'),code:[141,209],
+    text:B(`<code>execute()</code> first checks whether the last token is <code>&amp;</code>. Then it loops over the tokens: words before <code>|</code> go into <code>left[]</code> and words after it go into <code>right[]</code>. A <code>&lt;</code> or <code>&gt;</code> grabs the <b>next</b> token as a filename. Only one pipe is allowed.`,
+           `<code>execute()</code> эхлээд сүүлийн token нь <code>&amp;</code> эсэхийг шалгана. Дараа нь token-уудаар давтана: <code>|</code>-ээс өмнөх үгс <code>left[]</code> руу, хойших үгс <code>right[]</code> руу орно. <code>&lt;</code> эсвэл <code>&gt;</code> нь <b>дараагийн</b> token-ийг файлын нэр болгон авна. Зөвхөн нэг pipe зөвшөөрөгдөнө.`),
+    extra:chips(true)+`<div class="parsed">${desc.join('')}</div>`});
+
+  const count=P.pipe?2:1;
+  osh().state='working';
+  if(P.pipe){
+    S.pipe={r:3,w:4};osh().fd[3]='pipe read end';osh().fd[4]='pipe write end';
+    push({title:B('pipe(fds): create a pipe in the kernel','pipe(fds): kernel дотор pipe үүсгэх'),code:[211,220],
+      text:B('<code>pipe(fds)</code> asks the kernel for a one-way byte channel. It gives back two file descriptors: <code>fds[0]</code> to <b>read</b> from and <code>fds[1]</code> to <b>write</b> into. They are created <b>before</b> forking so that both children inherit them.',
+             '<code>pipe(fds)</code> нь kernel-ээс нэг чиглэлтэй байтын суваг хүснэ. Хоёр файл дескриптор буцаана: <b>уншихад</b> <code>fds[0]</code>, <b>бичихэд</b> <code>fds[1]</code>. Хоёр хүүхэд хоёулаа өвлөж авахын тулд fork-оос <b>өмнө</b> үүсгэдэг.'),
+      analogy:B('A pipe is a tube with a write end and a read end. Whatever goes into one end comes out the other, in order.','Pipe бол бичих болон унших үзүүртэй хоолой. Нэг үзүүрээр орсон бүхэн нөгөө үзүүрээр дарааллаараа гарна.')});
+  }
+
+  // children
+  const kids=[];
+  for(let k=0;k<count;k++){
+    const argv=k===0?P.left:P.right;
+    const pid=nextPid+k;
+    const child={pid,name:'osh',state:'forked',fd:JSON.parse(JSON.stringify(osh().fd)),argv,isNew:true};
+    osh().kids.push(child);kids.push(child);
+    log(pid,'running',line);
+    push({title:B(`fork() #${k+1} → child PID ${pid}`,`fork() #${k+1} → хүүхэд PID ${pid}`),code:[222,229],hl2:[277,278],
+      text:B(`<code>fork()</code> makes an <b>almost exact copy</b> of osh: same code, same variables, same open files. It returns <b>twice</b>: in the parent it returns the child's PID (${pid}), and in the child it returns <b>0</b>. That is how each copy knows which one it is (<code>if (pid == 0)</code>). The parent records the PID and logs a <b>running</b> event.`,
+             `<code>fork()</code> нь osh-ийн <b>бараг яг ижил хуулбарыг</b> үүсгэнэ: ижил код, ижил хувьсагч, ижил нээлттэй файлууд. Энэ нь <b>хоёр удаа</b> буцдаг: эцэг процесст хүүхдийн PID-г (${pid}), хүүхдэд <b>0</b>-ийг буцаана. Хуулбар бүр өөрийгөө хэн болохыг ингэж мэддэг (<code>if (pid == 0)</code>). Эцэг процесс PID-г тэмдэглээд <b>running</b> event бичнэ.`),
+      analogy:B('Photocopying yourself. The copy has your memories, but its badge says "child".','Өөрийгөө хувилж байгаа мэт. Хуулбар таны бүх санамжтай ч энгэрийн тэмдэг дээр нь "хүүхэд" гэж бичээстэй.')});
+    child.isNew=false;
+
+    // dup2 setup
+    const changes=[];
+    if(count===2){
+      if(k===0){child.fd[1]='pipe write end';changes.push('dup2(fds[1], 1): stdout → pipe');}
+      else{child.fd[0]='pipe read end';changes.push('dup2(fds[0], 0): stdin ← pipe');}
+      delete child.fd[3];delete child.fd[4];changes.push('close(fds[0]); close(fds[1])');
+    }
+    let failMsg=null;
+    if(k===0&&P.infile){
+      if(FS[P.infile]==null){failMsg=`${P.infile}: No such file or directory`;}
+      else{child.fd[0]='file '+P.infile;changes.push(`open("${P.infile}", O_RDONLY) + dup2(fd, 0): stdin ← file`);}
+    }
+    if(!failMsg&&k===count-1&&P.outfile){
+      child.fd[1]='file '+P.outfile;changes.push(`open("${P.outfile}", O_WRONLY|O_CREAT|O_TRUNC) + dup2(fd, 1): stdout → file`);
+    }
+    if(failMsg){
+      S.term.push({t:failMsg,err:true});child.state='failed';child.exit=1;
+      push({title:B(`Child ${pid}: open() fails`,`Хүүхэд ${pid}: open() амжилтгүй`),code:[242,248],bad:true,
+        text:B(`The child tries to open <code>${esc(P.infile)}</code> for reading, but it doesn't exist. <code>perror()</code> prints the reason and the child calls <code>_exit(1)</code> <b>without</b> running the program. The parent will see exit code 1 and log <b>failed</b>.`,
+               `Хүүхэд <code>${esc(P.infile)}</code>-ийг уншихаар нээх гэсэн ч ийм файл байхгүй. <code>perror()</code> шалтгааныг хэвлээд хүүхэд программыг <b>ажиллуулалгүйгээр</b> <code>_exit(1)</code> дуудна. Эцэг процесс 1 гэсэн exit code хараад <b>failed</b> гэж бичнэ.`)});
+    }else if(changes.length){
+      const list=`<div class="parsed" style="grid-template-columns:1fr">${changes.map(c=>`<span class="mono" style="font-size:13px">• ${esc(c)}</span>`).join('')}</div>`;
+      push({title:B(`Child ${pid}: rewire stdin/stdout with dup2()`,`Хүүхэд ${pid}: dup2()-оор stdin/stdout-ийг дахин холбох`),code:count===2?[232,269]:(P.infile?[242,269]:[256,269]),
+        text:B(`Before running the program, the child changes where its <b>file descriptors</b> point. <code>dup2(a, b)</code> means "make fd b point wherever a points". The program doesn't know or care. It still just reads fd 0 and writes fd 1.`,
+               `Программыг ажиллуулахаас өмнө хүүхэд өөрийн <b>файл дескрипторууд</b> хаашаа заахыг өөрчилнө. <code>dup2(a, b)</code> гэдэг нь "b дескрипторыг a-ийн заасан газар руу заалга" гэсэн үг. Программ үүнийг мэдэхгүй, тоохгүй. Тэр зүгээр л fd 0-ээс уншиж, fd 1 рүү бичсээр байна.`)+list,
+        analogy:B('Like moving the water hose to a different bucket. The tap (the program) has no idea where the water ends up.','Усны хоолойг өөр хувин руу шилжүүлж байгаа мэт. Цорго (программ) ус хаашаа очиж байгааг огт мэдэхгүй.')});
+    }
+    if(child.state!=='failed'){
+      const r=fakeExec(argv,'');
+      if(r.notfound){
+        S.term.push({t:`${argv[0]}: No such file or directory`,err:true});child.state='failed';child.exit=127;
+        const cdNote=argv[0]==='cd'?B(' (<code>cd</code> is not a program. It has to be a shell built-in, and osh doesn\'t have one. See section 6.)',' (<code>cd</code> бол программ биш. Энэ нь shell-ийн дотоод (built-in) команд байх ёстой, гэтэл osh-д байхгүй. 6-р хэсгийг харна уу.)'):'';
+        push({title:B(`Child ${pid}: execvp("${esc(argv[0])}") fails`,`Хүүхэд ${pid}: execvp("${esc(argv[0])}") амжилтгүй`),code:[271,274],bad:true,
+          text:B(`<code>execvp()</code> searches every folder in <code>$PATH</code> for a program called <code>${esc(argv[0])}</code> and doesn't find one.`,`<code>execvp()</code> <code>$PATH</code>-ийн бүх хавтаснаас <code>${esc(argv[0])}</code> нэртэй программ хайгаад олсонгүй.`)+cdNote+' '+
+            B(`execvp only <b>returns</b> on failure, so the next lines run: <code>perror</code> prints the reason and <code>_exit(127)</code> ends the child. 127 is the standard "command not found" code.`,`execvp зөвхөн алдаа гарвал <b>буцдаг</b> тул дараагийн мөрүүд ажиллана: <code>perror</code> шалтгааныг хэвлэж, <code>_exit(127)</code> хүүхдийг дуусгана. 127 бол "команд олдсонгүй" гэсэн стандарт код.`)});
+      }else{
+        child.name=argv[0];child.state='running';
+        push({title:B(`Child ${pid}: execvp() → becomes ${esc(argv[0])}`,`Хүүхэд ${pid}: execvp() → ${esc(argv[0])} болж хувирна`),code:[271,274],
+          text:B(`<code>execvp(cmd[0], cmd)</code> <b>replaces</b> the child's program with <code>${esc(argv[0])}</code>. It keeps the same PID and the same file descriptors, but the osh code is gone from this process. If it works, it <b>never returns</b>, which is why lines 273-274 only run on failure.`,
+                 `<code>execvp(cmd[0], cmd)</code> хүүхдийн программыг <code>${esc(argv[0])}</code>-ээр <b>солино</b>. PID болон файл дескрипторууд нь хэвээр үлдэх ч энэ процессоос osh-ийн код алга болно. Амжилттай бол <b>хэзээ ч буцдаггүй</b>. Тиймээс 273-274-р мөрүүд зөвхөн алдаа гарсан үед ажилладаг.`),
+          analogy:B('The photocopy throws away its own script and starts reading a different one, while keeping the same desk and the same phone lines.','Хуулбар өөрийн зохиолоо хаяад өөр зохиол уншиж эхэлж байгаа мэт. Ширээ, утасны шугам нь хэвээрээ.'),
+          extra:`<div class="parsed"><b>argv</b><span class="mono">[${argv.map(x=>'"'+esc(x)+'"').join(', ')}, NULL]</span></div>`});
+      }
+    }
+  }
+  nextPid+=count;
+
+  if(P.pipe){
+    delete osh().fd[3];delete osh().fd[4];
+    push({title:B('Parent closes both pipe ends','Эцэг процесс pipe-ийн хоёр үзүүрийг хаана'),code:[281,284],
+      text:B('The parent doesn\'t use the pipe itself, so it closes both ends. This matters: the reader (cmd 2) only sees end-of-file when <b>every</b> write end is closed. If the parent kept its copy open, a command like <code>wc</code> would wait forever.',
+             'Эцэг процесс pipe-ийг өөрөө ашигладаггүй тул хоёр үзүүрийг нь хаана. Энэ чухал: уншигч (команд 2) зөвхөн <b>бүх</b> бичих үзүүр хаагдсан үед файлын төгсгөл (EOF)-ийг хардаг. Эцэг процесс өөрийн хуулбарыг нээлттэй үлдээвэл <code>wc</code> шиг команд үүрд хүлээнэ.')});
+  }
+
+  // Run programs (compute output)
+  let pipeData='';
+  const results=[];
+  kids.forEach((c,k)=>{
+    if(c.state==='failed'){results.push({out:'',err:'',code:c.exit});return;}
+    let input='';
+    if(k===0&&P.infile)input=FS[P.infile]||'';
+    if(k===1)input=pipeData;
+    const r=fakeExec(c.argv,input);
+    results.push(r);
+    if(count===2&&k===0)pipeData=r.out||'';
+  });
+  const finalOut=results[count-1].out||'';
+  const FS_after=Object.assign({},FS);
+  const writeOut=()=>{
+    if(P.outfile&&kids[count-1].state!=='failed'){FS_after[P.outfile]=finalOut;S.files=Object.assign({},FS_after);S.newFiles.push(P.outfile);}
+    else if(finalOut){finalOut.replace(/\n$/,'').split('\n').forEach(t=>S.term.push({t}));}
+    results.forEach(r=>{if(r.err)r.err.replace(/\n$/,'').split('\n').forEach(t=>S.term.push({t,err:true}));});
+  };
+
+  if(P.bg){
+    osh().state='ready';
+    S.term.push({t:`[background] PID ${kids[0].pid}`});
+    push({title:B('Background (&): don\'t wait','Background (&): хүлээхгүй'),code:[286,290],
+      text:B(`Because the line ended with <code>&amp;</code>, the parent prints <code>[background] PID ${kids[0].pid}</code> and jumps straight to cleanup. It <b>doesn't</b> call <code>waitpid()</code>, so the prompt comes back immediately while the child keeps running.`,
+             `Мөр <code>&amp;</code>-ээр төгссөн тул эцэг процесс <code>[background] PID ${kids[0].pid}</code> гэж хэвлээд шууд cleanup руу үсэрнэ. <code>waitpid()</code>-ийг <b>дуудахгүй</b>, тиймээс хүүхэд ажилласаар байхад prompt шууд буцаж гарна.`),
+      analogy:B('Putting laundry in the machine and walking away, instead of standing there watching it.','Угаалгын машинд хувцас хийгээд хажууд нь зогсож харалгүй өөр ажил руугаа явж байгаа мэт.')});
+    kids.forEach(c=>{if(c.state!=='failed')c.state='running';});
+    writeOut();
+    S.term.push({t:'osh> '});S.bgPrompt=true;
+    push({title:B('Prompt is back while the child runs','Хүүхэд ажиллаж байхад prompt буцаж ирлээ'),code:[331,343],
+      text:B('You can type the next command now. The background child is still alive in the tree.','Одоо дараагийн командаа бичиж болно. Background хүүхэд модонд амьд хэвээр байна.')+(results[0].ms?B(` (<code>sleep</code> lasts ${results[0].ms/1000} s.)`,` (<code>sleep</code> ${results[0].ms/1000} сек үргэлжилнэ.)`):'')});
+    kids.forEach((c,k)=>{c.state='zombie';c.exit=results[k].code||0;});
+    push({title:B('The child exits → it becomes a zombie','Хүүхэд дуусна → zombie болно'),code:[111,121],
+      text:B('When the program finishes, the kernel keeps a tiny record (PID + exit status) until the parent asks for it. A finished-but-not-collected process is called a <b>zombie</b>. Nobody is waiting for it right now.',
+             'Программ дуусахад эцэг процесс асуух хүртэл kernel жижиг бичлэг (PID + exit status) хадгалж үлдээнэ. Дууссан ч цуглуулагдаагүй процессыг <b>zombie</b> гэдэг. Яг одоо түүнийг хэн ч хүлээгээгүй байна.')});
+    kids.forEach((c,k)=>{c.state='reaped';log(c.pid,(results[k].code||0)===0?'completed':'failed','background');});
+    push({title:B('Next loop: reap_background() collects it','Дараагийн давталт: reap_background() цуглуулна'),code:[111,121],hl2:[331,332],
+      text:B('At the top of the next loop iteration, <code>reap_background()</code> calls <code>waitpid(-1, &amp;status, WNOHANG)</code>. That means "any child that has finished? Don\'t block if none." Each one it finds gets logged as completed/failed, and the zombie is gone. Note the log line says <code>background</code> instead of the real command.',
+             'Дараагийн давталтын эхэнд <code>reap_background()</code> нь <code>waitpid(-1, &amp;status, WNOHANG)</code> дуудна. Энэ нь "дууссан хүүхэд байна уу? Байхгүй бол бүү хүлээ" гэсэн утгатай. Олдсон бүрийг completed/failed гэж бичээд zombie алга болно. Лог дээр жинхэнэ командын оронд <code>background</code> гэж бичигддэгийг анхаараарай.'),
+      extra:`<div class="analogy">⚠️ ${B('In the web UI, osh runs with <code>-c</code> and quits right after starting the job, so this reaping never happens there. That\'s why the UI\'s footnote says background completion may not update. See section 6.','Веб UI дээр osh <code>-c</code>-тэй ажиллаж, ажлыг эхлүүлмэгцээ гардаг тул энэ цуглуулалт тэнд хэзээ ч болдоггүй. Тиймээс UI-ийн доод тайлбарт background дууссан нь шинэчлэгдэхгүй байж магадгүй гэж бичсэн. 6-р хэсгийг харна уу.')}</div>`});
+  }else{
+    osh().state='waiting';
+    push({title:B('Parent waits with waitpid()','Эцэг процесс waitpid()-ээр хүлээнэ'),code:[292,295],
+      text:B(`The parent calls <code>waitpid(pid, &amp;st, 0)</code> for each child in order. The <code>0</code> means <b>block</b>: osh is paused until that child finishes. Meanwhile the child${count>1?'ren run at the same time, with data flowing through the pipe':' runs'}.`,
+             `Эцэг процесс хүүхэд бүрд дарааллаар нь <code>waitpid(pid, &amp;st, 0)</code> дуудна. <code>0</code> нь <b>блоклох</b> гэсэн утгатай: тэр хүүхэд дуустал osh зогсоно. Энэ хооронд ${count>1?'хүүхдүүд зэрэг ажиллаж, өгөгдөл pipe-аар урсана':'хүүхэд ажиллана'}.`),
+      analogy:B('Standing at the microwave until it beeps.','Микроволновын дэргэд дуугарах хүртэл нь зогсож байгаа мэт.')});
+    writeOut();
+    kids.forEach((c,k)=>{c.state='zombie';c.exit=results[k].code||0;});
+    push({title:count>1?B('Programs finish → output appears','Программууд дуусна → гаралт харагдана'):B('Program finishes → output appears','Программ дуусна → гаралт харагдана'),code:[292,299],
+      text:(P.outfile?B(`The output went into <code>${esc(P.outfile)}</code> instead of the screen (look at the files panel). `,`Гаралт дэлгэцийн оронд <code>${esc(P.outfile)}</code> руу орсон (файлуудын самбарыг хараарай). `):B('The output shows up in the terminal. ','Гаралт терминалд харагдана. '))+
+        (count>1?B(`<code>${esc(P.left[0])}</code> wrote into the pipe, and <code>${esc(P.right[0])}</code> read from it and wrote to the screen. `,`<code>${esc(P.left[0])}</code> pipe руу бичиж, <code>${esc(P.right[0])}</code> түүнээс уншаад цааш бичсэн. `):'')+
+        B('For a moment each finished child is a <b>zombie</b>: it is dead, but its exit status is still waiting to be collected.','Хэсэг хугацаанд дууссан хүүхэд бүр <b>zombie</b> байна: үхсэн ч exit status нь цуглуулагдахыг хүлээсээр.')});
+    kids.forEach((c,k)=>{c.state='reaped';log(c.pid,(results[k].code||0)===0?'completed':'failed',line);});
+    osh().state='ready';
+    const code=results[count-1].code||0;
+    push({title:B('Reap the children and log the result','Хүүхдүүдийг цуглуулж үр дүнг бичих'),code:[295,308],
+      text:B(`<code>waitpid</code> returns and collects the exit status, so the zombie disappears. <code>WIFEXITED</code>/<code>WEXITSTATUS</code> decode it (a signal-killed child counts as 128+signal). Status 0 is logged as <b>completed</b> and anything else as <b>failed</b>. The <b>last</b> command's code becomes osh's result: here <b>${code}</b>.`,
+             `<code>waitpid</code> буцаж exit status-ийг цуглуулдаг тул zombie алга болно. <code>WIFEXITED</code>/<code>WEXITSTATUS</code> үүнийг задална (signal-аар алагдсан хүүхэд 128+signal гэж тооцогдоно). 0 статусыг <b>completed</b>, бусдыг <b>failed</b> гэж бичнэ. <b>Сүүлийн</b> командын код osh-ийн үр дүн болно: энд <b>${code}</b>.`)});
+  }
+  if(!S.bgPrompt)S.term.push({t:'osh> '});
+  push({title:B('Back to the top of the loop','Давталтын эхэнд буцах'),code:[397,401],
+    text:B('<code>execute()</code> frees the tokens (<code>release()</code>) and returns. In interactive mode the loop prints <code>osh&gt;</code> again. With <code>-c</code> (web UI / tests) the loop breaks here and osh exits with that result code.',
+           '<code>execute()</code> token-уудыг чөлөөлөөд (<code>release()</code>) буцна. Интерактив горимд давталт дахин <code>osh&gt;</code> хэвлэнэ. <code>-c</code> горимд (веб UI / тест) давталт энд тасарч, osh тэр үр дүнгийн кодоор гарна.')});
+  const fsSnapshot=FS_after;
+  return {steps,commit:()=>{history=newHistory;FS=fsSnapshot;evAll=steps[steps.length-1].state.ev;}};
+}
+
+let STEPS=[],cur=0,timer=null;
+function renderTree(st){
+  const fdHtml=(p)=>`<div class="fdt">${Object.keys(p.fd).map(k=>{const v=p.fd[k];const cls=v.startsWith('file')?'chg':(v.startsWith('pipe')?'pp':'');const nm={0:'0 stdin',1:'1 stdout',2:'2 stderr'}[k]||k;return `<span class="k">fd ${nm}</span><span class="v ${cls}">→ ${fdLabel(v)}</span>`;}).join('')}</div>`;
+  const node=(p,cls)=>`<div class="pnode ${cls||''} ${p.state==='reaped'?'reaped':''} ${p.isNew?'new':''}"><span class="pid">PID ${p.pid}</span> <span class="nm">${esc(p.name)}</span>${p.state?`<span class="st ${p.state==='ready'?'waiting':p.state}">${STATE_LBL[p.state]||esc(p.state)}${(p.state==='zombie'||p.state==='failed'||p.state==='reaped')&&p.exit!==undefined?' · exit '+p.exit:''}</span>`:''}${p.state!=='reaped'?fdHtml(p):''}</div>`;
+  const o=st.procs[0];
+  $('tree').innerHTML=`<div class="pnode shell"><span class="pid">PID 4000</span> <span class="nm">bash</span> <span class="pid">${B('(your terminal)','(таны терминал)')}</span></div><div class="kids"><div class="row">${node(o,'osh')}${o.kids.length?`<div class="kids">${o.kids.map(k=>`<div class="row">${node(k)}</div>`).join('')}</div>`:''}</div></div>`;
+  $('pipeVis').innerHTML=st.pipe?`<div class="pipeObj"><span class="mono">fd 4 (write)</span><span class="tube"></span><span class="mono">fd 3 (read)</span> ${B('kernel pipe','kernel-ийн pipe')}</div>`:'';
+}
+function renderStep(){
+  const s=STEPS[cur];if(!s)return;const st=s.state;
+  $('stepNum').innerHTML=B(`Step ${cur+1} / ${STEPS.length}`,`Алхам ${cur+1} / ${STEPS.length}`);
+  $('stepTitle').innerHTML=(s.bad?'⛔ ':'')+s.title;
+  $('stepText').innerHTML=s.text;
+  $('stepExtra').innerHTML=(s.extra||'')+(s.analogy?`<div class="analogy">💡 ${s.analogy}</div>`:'');
+  $('codeLabel').innerHTML=B(`src/osh.c · lines ${s.code[0]}–${s.code[1]}`,`src/osh.c · ${s.code[0]}–${s.code[1]}-р мөр`);
+  renderCode($('codeBox'),s.code[0],s.code[1],s.code[0],s.code[1]);
+  if(s.hl2)$('codeBox').querySelectorAll('.ln').forEach(l=>{const n=+l.dataset.l;if(n>=s.hl2[0]&&n<=s.hl2[1])l.classList.add('hl');});
+  renderTree(st);
+  $('term').innerHTML=st.term.map(l=>`<div class="${l.err?'err':(l.dim?'dim':'')}">${esc(l.t)}</div>`).join('');
+  $('term').scrollTop=1e6;
+  const ev=st.ev;const nNew=st.newEv;
+  $('evlog').innerHTML=ev.length?ev.slice(-8).map((l,i,arr)=>`<div class="${i>=arr.length-nNew?'newl':''}">${esc(l)}</div>`).join(''):`<span style="color:var(--muted)">${B('(empty: nothing has been forked yet)','(хоосон: одоогоор юу ч fork хийгдээгүй)')}</span>`;
+  const files=st.files||FS;
+  $('files').innerHTML=Object.keys(files).sort().map(f=>`<span class="file ${st.newFiles.includes(f)?'newf':''}">${files[f]===null?'📁':'📄'} ${esc(f)}</span>`).join('');
+  $('dots').innerHTML=STEPS.map((_,i)=>`<i class="${i<cur?'done':(i===cur?'cur':'')}" data-i="${i}" title="${i+1}"></i>`).join('');
+  $('prevBtn').disabled=cur===0;$('nextBtn').disabled=cur===STEPS.length-1;
+}
+let pendingCommit=null;
+function run(){
+  stopPlay();
+  if(pendingCommit){pendingCommit();pendingCommit=null;}
+  const r=buildSteps($('cmd').value);
+  STEPS=r.steps;pendingCommit=r.commit;cur=0;renderStep();
+}
+const PLAY=B('▶ Play','▶ Тоглуулах'),PAUSE=B('❚❚ Pause','❚❚ Зогсоох');
+function stopPlay(){if(timer){clearInterval(timer);timer=null;}$('playBtn').innerHTML=PLAY;}
+$('runBtn').onclick=run;
+$('cmd').addEventListener('keydown',e=>{if(e.key==='Enter')run();});
+$('nextBtn').onclick=()=>{stopPlay();if(cur<STEPS.length-1){cur++;renderStep();}};
+$('prevBtn').onclick=()=>{stopPlay();if(cur>0){cur--;renderStep();}};
+$('dots').onclick=e=>{const i=e.target.dataset.i;if(i!==undefined){stopPlay();cur=+i;renderStep();}};
+$('playBtn').onclick=()=>{if(timer){stopPlay();return;}if(cur===STEPS.length-1)cur=0;renderStep();$('playBtn').innerHTML=PAUSE;timer=setInterval(()=>{if(cur<STEPS.length-1){cur++;renderStep();}else stopPlay();},2600);};
+$('resetBtn').onclick=()=>{stopPlay();pendingCommit=null;resetWorld();$('cmd').value='echo hello';run();};
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowRight')$('nextBtn').click();if(e.key==='ArrowLeft')$('prevBtn').click();});
+const EXAMPLES=[
+ ['echo hello',B('simple','энгийн')],['ls -l | wc -l','pipe'],['ls > out.txt',B('output →file','гаралт →файл')],['sort < names.txt',B('input ←file','оролт ←файл')],
+ ['sort < names.txt | uniq > clean.txt',B('everything','бүгдийг нь')],['sleep 3 &','background'],['!!',B('history','түүх')],['echo "hi there"',B('quotes','хашилт')],
+ ['foo',B('not found','олдохгүй')],['cat < nofile.txt',B('missing file','файл байхгүй')],['echo hi |',B('bad pipe','буруу pipe')],['ls > ',B('no filename','файлын нэргүй')],['cd /tmp','cd?']];
+$('examples').innerHTML=EXAMPLES.map(([c,l])=>`<button class="chip-btn" data-c="${esc(c)}" title="${esc(c)}">${l}: <span class="mono">${esc(c)}</span></button>`).join('');
+$('examples').onclick=e=>{const b=e.target.closest('button');if(b){$('cmd').value=b.dataset.c;run();}};
+run();
+
+/* ---------- 3. Concepts ---------- */
+const svgBox=(x,y,w,h,label,color,sub)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="none" stroke="${color}" stroke-width="2"/><text x="${x+w/2}" y="${y+h/2+(sub?-2:4)}" text-anchor="middle">${label}</text>${sub?`<text class="muted" x="${x+w/2}" y="${y+h/2+13}" text-anchor="middle" style="font-size:10px">${sub}</text>`:''}`;
+const arrow=(x1,y1,x2,y2,color)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2" marker-end="url(#ah)"/>`;
+const defs=c=>`<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker></defs>`;
+const CONCEPTS=[
+ {n:'fork()',d:B('Creates a new process that is a copy of the caller. It returns the child PID to the parent and 0 to the child.','Дуудагчийн хуулбар болох шинэ процесс үүсгэнэ. Эцэг процесст хүүхдийн PID-г, хүүхдэд 0-ийг буцаана.'),svg:`<svg viewBox="0 0 280 100">${defs('var(--accent)')}${svgBox(90,6,100,34,'osh 4100','var(--accent)')}${arrow(120,40,60,60,'var(--accent)')}${arrow(160,40,220,60,'var(--accent)')}${svgBox(10,62,100,34,'parent','var(--accent)','fork() = 4101')}${svgBox(170,62,100,34,'child 4101','var(--accent)','fork() = 0')}</svg>`,eg:B('osh.c line 223','osh.c 223-р мөр')},
+ {n:'execvp()',d:B('Replaces the current program with a new one, found via $PATH. The PID and open files stay. It only returns on error.','Одоогийн программыг $PATH-аас олсон шинэ программаар солино. PID болон нээлттэй файлууд хэвээр үлдэнэ. Зөвхөн алдаа гарвал буцна.'),svg:`<svg viewBox="0 0 280 100">${defs('var(--c-cmd)')}${svgBox(10,30,100,40,'4101: osh code','var(--accent)')}${arrow(115,50,165,50,'var(--c-cmd)')}${svgBox(170,30,100,40,'4101: ls code','var(--c-cmd)')}<text class="muted" x="140" y="40" text-anchor="middle" style="font-size:10px">execvp</text></svg>`,eg:B('osh.c line 272','osh.c 272-р мөр')},
+ {n:'waitpid()',d:B('The parent pauses until a specific child ends, then collects its exit status. With WNOHANG it just checks and never blocks.','Эцэг процесс тодорхой хүүхэд дуустал зогсоод exit status-ийг нь цуглуулна. WNOHANG-тай бол зөвхөн шалгаад хэзээ ч блоклохгүй.'),svg:`<svg viewBox="0 0 280 100">${defs('var(--c-bg)')}${svgBox(10,30,100,40,'osh (waiting)','var(--muted)')}${svgBox(170,30,100,40,'child','var(--c-bg)','exit(0)')}${arrow(170,60,112,60,'var(--c-bg)')}<text class="muted" x="140" y="76" text-anchor="middle" style="font-size:10px">status 0</text></svg>`,eg:B('osh.c lines 115, 295','osh.c 115, 295-р мөр')},
+ {n:'dup2()',d:B('dup2(a, b) makes fd b point to the same thing as fd a. This is how redirection and pipes work without the program knowing.','dup2(a, b) нь fd b-г fd a-тай ижил зүйл рүү заалгана. Программд мэдэгдэлгүйгээр redirection болон pipe ингэж ажилладаг.'),svg:`<svg viewBox="0 0 280 100">${defs('var(--c-redir)')}<text x="10" y="30">fd 1 stdout</text><line x1="90" y1="26" x2="180" y2="26" stroke="var(--muted)" stroke-width="2" stroke-dasharray="4 4"/><text x="190" y="30" class="muted">screen</text>${arrow(90,30,180,70,'var(--c-redir)')}<text x="190" y="75">out.txt</text></svg>`,eg:B('osh.c lines 233, 250, 265','osh.c 233, 250, 265-р мөр')},
+ {n:'pipe()',d:B('Creates a one-way channel in the kernel with a write end and a read end. The left command writes, the right command reads.','Kernel дотор бичих болон унших үзүүртэй нэг чиглэлтэй суваг үүсгэнэ. Зүүн талын команд бичиж, баруун талынх уншина.'),svg:`<svg viewBox="0 0 280 100">${defs('var(--c-pipe)')}${svgBox(6,30,70,40,'ls','var(--c-cmd)')}<rect x="96" y="40" width="88" height="20" rx="10" fill="none" stroke="var(--c-pipe)" stroke-width="2"/><text x="140" y="54" text-anchor="middle" style="font-size:10px">pipe</text>${arrow(76,50,94,50,'var(--c-pipe)')}${arrow(184,50,202,50,'var(--c-pipe)')}${svgBox(204,30,70,40,'wc -l','var(--c-cmd)')}</svg>`,eg:B('osh.c line 216','osh.c 216-р мөр')},
+ {n:'zombie',d:B('A child that has exited but hasn\'t been waited for yet. Only its PID and exit code remain. Calling waitpid removes it.','Дууссан ч эцэг процесс нь хараахан хүлээж аваагүй хүүхэд. Зөвхөн PID болон exit code нь үлдсэн байдаг. waitpid дуудахад арилна.'),svg:`<svg viewBox="0 0 280 100">${defs('var(--c-zombie)')}${svgBox(6,30,76,40,'running','var(--c-cmd)')}${arrow(84,50,100,50,'var(--c-zombie)')}${svgBox(102,30,76,40,'zombie','var(--c-zombie)','exited')}${arrow(180,50,196,50,'var(--c-zombie)')}${svgBox(198,30,76,40,'gone','var(--muted)','reaped')}</svg>`,eg:'reap_background(), line 111'}
+];
+$('conceptGrid').innerHTML=CONCEPTS.map(c=>`<div class="card concept"><h3><code>${c.n}</code></h3><div class="mini">${c.svg}</div><p>${c.d}</p><div class="eg mono">${c.eg}</div></div>`).join('');
+
+/* ---------- 4. Code map ---------- */
+const FNS=[
+ {n:'main()',r:[315,405],d:B('The entry point. It reads <code>OSH_EVENTS</code>, picks interactive or <code>-c</code> mode, then loops: reap background jobs → prompt → read → handle <code>exit</code> / <code>!!</code> → save history → <code>execute()</code>.',
+   'Эхлэх цэг. <code>OSH_EVENTS</code>-ийг уншиж, интерактив эсвэл <code>-c</code> горимыг сонгоод давтана: background ажлуудыг цуглуулах → prompt → унших → <code>exit</code> / <code>!!</code> шийдэх → түүх хадгалах → <code>execute()</code>.')},
+ {n:'execute()',r:[123,313],d:B('The heart of the shell, about 190 lines. It tokenizes, parses roles (<code>&amp;</code>, <code>|</code>, <code>&lt;</code>, <code>&gt;</code>), makes the pipe, forks one or two children, sets up <code>dup2</code> in each child, calls <code>execvp</code>, then either returns immediately (background) or waits and logs results.',
+   'Shell-ийн зүрх, ойролцоогоор 190 мөр. Tokenize хийж, үүргүүдийг (<code>&amp;</code>, <code>|</code>, <code>&lt;</code>, <code>&gt;</code>) задалж, pipe үүсгэж, нэг юмуу хоёр хүүхэд fork хийнэ. Хүүхэд бүрт <code>dup2</code> тохируулж <code>execvp</code> дуудна. Дараа нь шууд буцах (background) эсвэл хүлээгээд үр дүнг бичнэ.')},
+ {n:'tokenize()',r:[42,109],d:B('Splits a line into words. It handles single and double quotes, backslash escapes, and makes <code>| &lt; &gt; &amp;</code> separate tokens. Each word is <code>strdup</code>-ed, so it must be freed later. Returns the count, or -1 on error.',
+   'Мөрийг үгэнд хуваана. Дан болон давхар хашилт, backslash escape-ийг боловсруулж, <code>| &lt; &gt; &amp;</code>-ийг тусдаа token болгоно. Үг бүрийг <code>strdup</code> хийдэг тул дараа нь чөлөөлөх ёстой. Тоог нь, алдаа гарвал -1 буцаана.')},
+ {n:'reap_background()',r:[111,121],d:B('Collects any finished children without blocking (<code>WNOHANG</code>), so background jobs don\'t stay zombies. Runs at the top of every loop.',
+   'Дууссан хүүхдүүдийг блоклохгүйгээр (<code>WNOHANG</code>) цуглуулдаг тул background ажлууд zombie хэвээр үлдэхгүй. Давталт бүрийн эхэнд ажиллана.')},
+ {n:'event_log()',r:[19,35],d:B('Appends one tab-separated line (<code>time pid ppid state cmd</code>) to the file named in <code>OSH_EVENTS</code>. If the variable is unset, it does nothing. This is how the UI learns about processes.',
+   '<code>OSH_EVENTS</code>-д заасан файл руу таб-аар тусгаарласан нэг мөр (<code>time pid ppid state cmd</code>) нэмнэ. Хувьсагч тохируулаагүй бол юу ч хийхгүй. UI процессуудын талаар ингэж мэдэж авдаг.')},
+ {n:'release()',r:[37,40],d:B('Frees the strings that <code>tokenize()</code> allocated. Called on every exit path of <code>execute()</code> through the <code>cleanup:</code> label.',
+   '<code>tokenize()</code>-ийн нөөцөлсөн мөрүүдийг чөлөөлнө. <code>execute()</code>-ээс гарах бүх замд <code>cleanup:</code> label-аар дамжин дуудагдана.')}
+];
+(function(){
+  const list=$('fnList');
+  list.innerHTML=FNS.map((f,i)=>`<button data-i="${i}"><span class="mono">${f.n}</span><span class="l">${B(`lines ${f.r[0]}–${f.r[1]} · ${f.r[1]-f.r[0]+1} lines`,`${f.r[0]}–${f.r[1]}-р мөр · ${f.r[1]-f.r[0]+1} мөр`)}</span></button>`).join('');
+  const show=i=>{list.querySelectorAll('button').forEach((b,j)=>b.classList.toggle('on',i===j));$('fnInfo').innerHTML=`<h3 class="mono">${FNS[i].n}</h3><p>${FNS[i].d}</p>`;renderCode($('fnCode'),FNS[i].r[0],FNS[i].r[1],-1,-1,0);$('fnCode').scrollTop=0;};
+  list.onclick=e=>{const b=e.target.closest('button');if(b)show(+b.dataset.i);};
+  show(1);
+})();
+
+/* ---------- 6. Gaps ---------- */
+const GAPS=[
+ ['bug',B('Background jobs never finish in the web UI','Веб UI дээр background ажил хэзээ ч дуусдаггүй'),
+  B('With <code>-c</code>, osh starts <code>sleep 3 &amp;</code> and exits right away, so <code>reap_background()</code> never runs. The child is adopted by PID 1, and its event stays <b>running</b> forever. Fix idea: have the server keep one long-lived interactive osh (stdin/stdout pipes) instead of a new process per command, or have the child log its own completion.',
+    '<code>-c</code> горимд osh <code>sleep 3 &amp;</code>-ийг эхлүүлээд шууд гардаг тул <code>reap_background()</code> хэзээ ч ажилладаггүй. Хүүхдийг PID 1 өргөж авч, түүний event үүрд <b>running</b> хэвээр үлдэнэ. Засах санаа: команд бүрт шинэ процесс эхлүүлэхийн оронд сервер нэг удаан амьдардаг интерактив osh-ийг (stdin/stdout pipe-тай) барьж байх, эсвэл хүүхэд өөрөө дууссанаа бичих.')],
+ ['bug',B('The UI tree is only 2 levels and splits per command','UI-ийн мод зөвхөн 2 түвшинтэй, команд бүрээр салдаг'),
+  B('Each click spawns a new osh, so the tree shows many separate osh roots, each with 1–2 children. A real "process tree" (python → osh → children, plus PPIDs) would score better. With a long-lived osh, all commands would hang under one parent.',
+    'Дарах бүрт шинэ osh үүсдэг тул модонд тус бүр 1–2 хүүхэдтэй олон тусдаа osh үндэс харагдана. Жинхэнэ "процессын мод" (python → osh → хүүхдүүд, PPID-тай) илүү оноо авна. Удаан амьдардаг osh-тэй бол бүх команд нэг эцгийн дор харагдана.')],
+ ['note',B('!! in the UI bypasses the C code','UI дээрх !! нь C кодыг алгасдаг'),
+  B('<code>server.py</code> replays its own Python history, so a reviewer testing <code>!!</code> in the UI isn\'t testing <code>osh.c</code>. Mention this in the report, or fix it with the long-lived osh above.',
+    '<code>server.py</code> өөрийн Python түүхийг дахин тоглуулдаг тул UI дээр <code>!!</code> туршсан шүүмжлэгч <code>osh.c</code>-ийг шалгаагүй болно. Үүнийг тайландаа дурдах, эсвэл дээрх удаан амьдардаг osh-оор засах.')],
+ ['note',B('Background completion loses the command name','Background дуусахад командын нэр алга болдог'),
+  B('<code>reap_background()</code> logs the string <code>"background"</code> instead of the real command, so the UI can\'t show what finished. Fix: store the pid → command pairs in a small array.',
+    '<code>reap_background()</code> жинхэнэ командын оронд <code>"background"</code> гэсэн мөр бичдэг тул UI юу дууссаныг харуулж чадахгүй. Засвар: pid → команд хосуудыг жижиг массивт хадгалах.')],
+ ['idea',B('No built-in cd','Built-in cd байхгүй'),
+  B('<code>cd /tmp</code> fails with "No such file or directory", because <code>cd</code> must change the shell\'s <i>own</i> directory and can\'t be a child process. The textbook doesn\'t require it, but reviewers will try it. Fix: a few lines calling <code>chdir()</code> before <code>execute()</code>.',
+    '<code>cd /tmp</code> "No such file or directory" алдаа өгнө. Учир нь <code>cd</code> нь shell-ийн <i>өөрийнх нь</i> хавтсыг солих ёстой тул хүүхэд процесс байж болохгүй. Сурах бичиг үүнийг шаарддаггүй ч шүүмжлэгчид заавал туршина. Засвар: <code>execute()</code>-ээс өмнө <code>chdir()</code> дууддаг хэдэн мөр.')],
+ ['idea',B('Only one pipe','Зөвхөн нэг pipe'),
+  B('<code>ls | sort | uniq</code> is rejected with "Invalid pipe". That\'s fine for the textbook, but list it under Known issues.',
+    '<code>ls | sort | uniq</code> нь "Invalid pipe" гэж татгалзагдана. Сурах бичгийн хувьд зүгээр ч Known issues-д бичих хэрэгтэй.')],
+ ['idea',B('Tests only cover the happy core','Тестүүд зөвхөн үндсэн хэсгийг хамардаг'),
+  B('The 8 tests don\'t cover background (<code>&amp;</code>), <code>cd</code>, unknown commands (127), duplicate redirection, or unclosed quotes. Adding tests is an easy, clearly-yours contribution.',
+    '8 тест background (<code>&amp;</code>), <code>cd</code>, үл мэдэгдэх команд (127), давхар redirection, хаагдаагүй хашилтыг хамардаггүй. Тест нэмэх нь хялбар бөгөөд тодорхой таны хувь нэмэр болно.')],
+ ['note',B('README still says "after the project is finished"','README-д "төсөл бүрэн хэрэгжсэний дараа" гэсэн хэвээр'),
+  B('The Quick Start doesn\'t mention <code>make test</code> or <code>python3 ui/server.py</code>, and lists an <code>examples/</code> folder that doesn\'t exist. The brief requires README Quick Start, so this needs updating before the post.',
+    'Quick Start хэсэгт <code>make test</code> болон <code>python3 ui/server.py</code> дурдагдаагүй, мөн байхгүй <code>examples/</code> хавтсыг жагсаасан. Даалгавар README Quick Start шаарддаг тул пост оруулахаас өмнө шинэчлэх хэрэгтэй.')]
+];
+const TAG={bug:B('LIMIT','ХЯЗГААР'),idea:B('IDEA','САНАА'),note:B('NOTE','ТЭМДЭГЛЭЛ')};
+$('gapList').innerHTML=GAPS.map(([t,h,d])=>`<div class="gap"><span class="tag ${t}">${TAG[t]}</span><div><b>${h}</b><br><span style="color:var(--muted)">${d}</span></div></div>`).join('');
+
+/* ---------- 7. Quiz ---------- */
+const QUIZ=[
+ [B('Why does a shell need fork() AND exec()? Why not just exec?','Shell яагаад fork() БОЛОН exec() хоёуланг нь хэрэглэдэг вэ? Зүгээр exec хийж болохгүй гэж үү?'),
+  B('exec replaces the current program. If osh called exec directly, osh itself would turn into <code>ls</code> and disappear, and there would be no prompt afterwards. So osh first <b>forks</b> a copy and lets the copy exec, while the original stays alive to wait and show the next prompt.',
+    'exec одоогийн программыг солидог. osh шууд exec дуудвал osh өөрөө <code>ls</code> болж хувираад алга болох тул дараа нь prompt гарахгүй. Тиймээс osh эхлээд хуулбараа <b>fork</b> хийж, хуулбарт нь exec хийлгэдэг. Харин эх хувь нь амьд үлдэж хүлээгээд дараагийн prompt-ийг харуулна.')],
+ [B('fork() returns twice. What does each copy get?','fork() хоёр удаа буцдаг. Хуулбар бүр юу авдаг вэ?'),
+  B('The parent gets the child\'s PID (a positive number). The child gets 0. On failure the parent gets -1 and no child is created. osh checks <code>pid == 0</code> on line 231 to run the child-only code.',
+    'Эцэг процесс хүүхдийн PID-г (эерэг тоо) авна. Хүүхэд 0 авна. Алдаа гарвал эцэг процесс -1 авч, хүүхэд үүсэхгүй. osh зөвхөн хүүхдэд зориулсан кодыг ажиллуулахын тулд 231-р мөрөнд <code>pid == 0</code> гэж шалгадаг.')],
+ [B('What happens to the lines after execvp() when it succeeds?','execvp() амжилттай бол түүний дараах мөрүүдэд юу болох вэ?'),
+  B('They never run. The process image is replaced, so <code>perror</code> and <code>_exit(127)</code> on lines 273–274 only run if execvp fails, e.g. for an unknown command.',
+    'Хэзээ ч ажиллахгүй. Процессын дүр солигддог тул 273–274-р мөрийн <code>perror</code> болон <code>_exit(127)</code> зөвхөн execvp амжилтгүй болсон үед, жишээ нь үл мэдэгдэх команд үед ажиллана.')],
+ [B('How does "ls > out.txt" work if ls has no idea about files?','ls файлын талаар юу ч мэдэхгүй байхад "ls > out.txt" яаж ажилладаг вэ?'),
+  B('Inside the child, before exec, osh opens <code>out.txt</code> and calls <code>dup2(fd, 1)</code>. Now fd 1 (stdout) points at the file. <code>ls</code> just writes to fd 1 as usual and the bytes land in the file.',
+    'Хүүхэд дотор, exec-ээс өмнө osh <code>out.txt</code>-ийг нээгээд <code>dup2(fd, 1)</code> дуудна. Одоо fd 1 (stdout) файл руу заана. <code>ls</code> ердийнхөөрөө fd 1 рүү бичихэд байтууд файлд очно.')],
+ [B('Why does the parent close both pipe ends?','Эцэг процесс яагаад pipe-ийн хоёр үзүүрийг хаадаг вэ?'),
+  B('A reader only gets end-of-file when <b>all</b> write ends are closed. If the parent kept its write end open, <code>wc</code> would wait forever for more input. Closing unused ends also avoids leaking file descriptors.',
+    'Уншигч зөвхөн <b>бүх</b> бичих үзүүр хаагдсан үед EOF авдаг. Эцэг процесс бичих үзүүрээ нээлттэй үлдээвэл <code>wc</code> нэмэлт оролтыг үүрд хүлээнэ. Ашиглахгүй үзүүрүүдийг хаах нь файл дескриптор алдагдахаас (leak) сэргийлнэ.')],
+ [B('What is a zombie and how does osh prevent them?','Zombie гэж юу вэ, osh түүнээс хэрхэн сэргийлдэг вэ?'),
+  B('A process that has exited but whose parent hasn\'t collected its exit status yet. osh collects foreground children with <code>waitpid(pid, &amp;st, 0)</code> and background ones with <code>waitpid(-1, &amp;st, WNOHANG)</code> in <code>reap_background()</code> at every prompt.',
+    'Дууссан ч эцэг процесс нь exit status-ийг нь хараахан цуглуулаагүй процесс. osh foreground хүүхдүүдийг <code>waitpid(pid, &amp;st, 0)</code>-ээр, background-ийг prompt бүрт <code>reap_background()</code> доторх <code>waitpid(-1, &amp;st, WNOHANG)</code>-ээр цуглуулдаг.')],
+ [B('What\'s the difference between foreground and background (&) here?','Энд foreground болон background (&) хоёрын ялгаа юу вэ?'),
+  B('Foreground: the parent blocks in <code>waitpid</code> until the child ends. Background: it prints the PID and returns to the prompt immediately (lines 286–290). The child is reaped later.',
+    'Foreground: хүүхэд дуустал эцэг процесс <code>waitpid</code>-д блоклогдоно. Background: PID-г хэвлээд шууд prompt руу буцна (286–290-р мөр). Хүүхдийг дараа нь цуглуулна.')],
+ [B('Why _exit() in the child instead of exit()?','Хүүхэд дотор яагаад exit()-ийн оронд _exit() хэрэглэдэг вэ?'),
+  B('<code>exit()</code> would flush stdio buffers copied from the parent (possibly printing things twice) and run atexit handlers. <code>_exit()</code> ends the child immediately and cleanly.',
+    '<code>exit()</code> нь эцгээс хуулагдсан stdio буферуудыг flush хийж (зарим зүйлийг хоёр удаа хэвлэж магадгүй), atexit handler-уудыг ажиллуулна. <code>_exit()</code> хүүхдийг шууд, цэвэрхэн дуусгана.')],
+ [B('How does the web UI get real PIDs from a C program?','Веб UI C программаас жинхэнэ PID-уудыг яаж авдаг вэ?'),
+  B('osh writes a line to the file named by the <code>OSH_EVENTS</code> environment variable each time a child starts and ends. <code>server.py</code> sets that variable, reads the file on <code>/api/events</code>, and the page draws the tree from it every 2 seconds.',
+    'Хүүхэд эхлэх, дуусах бүрт osh <code>OSH_EVENTS</code> орчны хувьсагчид заасан файл руу мөр бичнэ. <code>server.py</code> тэр хувьсагчийг тохируулж, <code>/api/events</code> дээр файлыг уншдаг. Хуудас 2 секунд тутам түүнээс модоо зурна.')],
+ [B('What does the exit code 127 mean?','127 гэсэн exit code юу гэсэн үг вэ?'),
+  B('"Command not found": execvp couldn\'t find the program. osh uses <code>_exit(127)</code>, the same convention as bash.',
+    '"Команд олдсонгүй": execvp программыг олж чадаагүй. osh bash-тай адил дүрмээр <code>_exit(127)</code> ашигладаг.')]
+];
+$('quizList').innerHTML=QUIZ.map(([q,a],i)=>`<details class="q"><summary>${i+1}. ${q}</summary><div>${a}</div></details>`).join('');
+</script>
+</body>
+</html>

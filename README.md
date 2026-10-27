@@ -79,3 +79,6 @@ git push -u origin feature/ажлын-нэр
 - README-ийн агуулгыг цэгцэлж, Монгол хэлээр боловсруулахад OpenAI Codex ашигласан
 
 Одоогоор нэмэлт сан ашиглаагүй. Цаашид сан нэмбэл нэр, зориулалтыг энэ хэсэгт бичнэ.
+
+## Нэмэлт мэдээлэл
+- [Interactive Learning — OS хэрхэн ажилладаг вэ?](Interactive/osh_HowItWorks.html)
