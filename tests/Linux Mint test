@@ -1,0 +1,27 @@
+(base) vod@Panzergranadier:~/OSlabs/BD$ gcc -Wall -Wextra -std=c99 osh.c -o osh
+(base) vod@Panzergranadier:~/OSlabs/BD$ ./osh
+osh> ls -1
+osh
+osh.c
+osh> whoami
+vod
+osh> ls -l | grep osh
+-rwxrwxr-x 1 vod vod 21632 Oct 28 01:44 osh
+-rw-rw-r-- 1 vod vod  9354 Oct 28 01:38 osh.c
+osh> echo "Hello Linux Mint" > test.txt
+osh> cat < test.txt
+Hello Linux Mint
+osh> sleep 5 &
+[background] PID 7972
+osh> !!
+sleep 5 &
+[background] PID 7977
+osh> exit
+(base) vod@Panzergranadier:~/OSlabs/BD$ ./osh -c "ls -la|grep osh"
+-rwxrwxr-x 1 vod vod 21632 Oct 28 01:44 osh
+-rw-rw-r-- 1 vod vod  9354 Oct 28 01:38 osh.c
+(base) vod@Panzergranadier:~/OSlabs/BD$ export OSH_EVENTS="shell_events.log"
+(base) vod@Panzergranadier:~/OSlabs/BD$ ./osh
+osh> cat shell_events.log
+1793123240	8061	8057	running	cat shell_events.log
+osh> 
