@@ -9,7 +9,7 @@ C хэлээр бичсэн энгийн UNIX shell (`osh`). Хэрэглэгч�
 
 | Материал | Холбоос |
 |---|---|
-| Эцсийн тайлан | [docs/II-4-1_UNIX_Shell_Report_Final.pdf](docs/II-4-1_UNIX_Shell_Report_Final.pdf) |
+| Эцсийн тайлан | [docs/II-4-1_BD1_Report.pdf](docs/II-4-1_BD1_Report.pdf) |
 | Хэрэглэгчийн гарын авлага | [docs/II-4-1_Manual.pdf](docs/II-4-1_Manual.pdf) |
 | Интерактив тайлбар | [OS хэрхэн ажилладаг вэ?](https://bulgaa777.github.io/II-4-1-UNIX-Shell/Interactive/osh_HowItWorks.html) |
 | Тестийн үр дүн | `PASS: 16 tests` — Ubuntu (VirtualBox), Linux Mint, macOS |
@@ -253,10 +253,9 @@ II-4-1-UNIX-Shell/
 ├── Interactive/
 │   └── osh_HowItWorks.html       Интерактив сургалтын хуудас (GitHub Pages)
 └── docs/
-    ├── II-4-1_UNIX_Shell_Report_Final.pdf   Эцсийн тайлан
-    ├── II-4-1_Manual.pdf                    Хэрэглэгчийн гарын авлага
-    ├── Report_Draft_v1.pdf                  Тайлангийн эхний хувилбар
-    └── II-4-1_BD1_Report.pdf                Анхны тайлан
+    ├── II-4-1_BD1_Report.pdf     Эцсийн тайлан
+    ├── II-4-1_Manual.pdf         Хэрэглэгчийн гарын авлага
+    └── Report_Draft_v1.pdf       Тайлангийн эхний хувилбар
 ```
 
 | Make команд | Үйлдэл |
