@@ -210,8 +210,8 @@ html[lang="en"] .mn{display:none!important}
 <header class="top wrap">
   <div class="eyebrow"><span class="mn">F.CSM302 Үйлдлийн систем · БД1 · Баг II-4-1</span><span class="en">F.CSM302 Operating Systems · БД1 · Team II-4-1</span></div>
   <h1><span class="mn"><code>osh</code> хэрхэн ажилладаг вэ: дүрслэлээр</span><span class="en">How <code>osh</code> works, visually</span></h1>
-  <p class="lead mn">Танай багийн UNIX Shell-ийн алхам алхмаар хийх аялал. Доорх симулятор дээр команд ажиллуулаад shell командыг хэрхэн уншиж, хэсэглэж, <code>fork()</code>-оор хүүхэд процесс үүсгэж, оролт гаралтыг нь өөр тийш чиглүүлж, дуусахыг нь хүлээдгийг харна уу. Алхам бүр <code>src/osh.c</code> доторх жинхэнэ мөрийг заана.</p>
-  <p class="lead en">A guided tour of your team's UNIX Shell. Run commands in the simulator below and watch, step by step, how the shell reads them, splits them, creates child processes with <code>fork()</code>, rewires their input and output, and waits for them. Every step points to the real line in <code>src/osh.c</code>.</p>
+  <p class="lead mn">Манай багийн бүтээсэн UNIX Shell хэрхэн ажилладгийг алхам алхмаар тайлбарлана. Доорх симулятор дээр команд ажиллуулаад shell командыг хэрхэн уншиж, хэсэглэж, <code>fork()</code>-оор хүүхэд процесс үүсгэж, оролт гаралтыг нь өөр тийш чиглүүлж, дуусахыг нь хүлээдгийг харна уу. Алхам бүр <code>src/osh.c</code> доторх жинхэнэ мөрийг заана.</p>
+  <p class="lead en">A guided tour of our team's UNIX Shell. Run commands in the simulator below and watch, step by step, how the shell reads them, splits them, creates child processes with <code>fork()</code>, rewires their input and output, and waits for them. Every step points to the real line in <code>src/osh.c</code>.</p>
 </header>
 
 <nav class="toc"><div class="wrap">
@@ -220,7 +220,7 @@ html[lang="en"] .mn{display:none!important}
   <a href="#concepts"><span class="mn">3 · Гол syscall-ууд</span><span class="en">3 · Key syscalls</span></a>
   <a href="#code"><span class="mn">4 · Кодын зураглал</span><span class="en">4 · Code map</span></a>
   <a href="#modes"><span class="mn">5 · Ажиллуулах 2 горим</span><span class="en">5 · Two ways to run</span></a>
-  <a href="#gaps"><span class="mn">6 · Сайжруулах зүйлс</span><span class="en">6 · Gaps you could fix</span></a>
+  <a href="#gaps"><span class="mn">6 · Сайжруулах зүйлс</span><span class="en">6 · Gaps still to fix</span></a>
   <a href="#quiz"><span class="mn">7 · Хамгаалалтын асуулт</span><span class="en">7 · Defense quiz</span></a>
   <div class="navBtns">
     <div class="langSw" role="group" aria-label="Language"><button data-lang="mn">MN</button><button data-lang="en">EN</button></div>
@@ -331,16 +331,16 @@ $ ./osh -c "!!"
     </div>
   </div>
   <div class="callout warn" style="margin-top:12px">
-    <span class="mn"><b>Тэгвэл веб UI дээр <code>!!</code> яаж ажилладаг вэ?</b> C кодыг огт ашигладаггүй. <code>server.py</code> <code>HISTORY</code> нэртэй өөрийн Python жагсаалттай. Та <code>!!</code> илгээхэд сервер osh-ийг дуудахаасаа <i>өмнө</i> сүүлийн командаар сольчихдог. C-ийн түүхийн код зөвхөн интерактив горимд болон сүүлийн тестэд (жинхэнэ интерактив osh руу <code>echo first / !! / exit</code> оруулдаг) шалгагддаг.</span>
-    <span class="en"><b>So how does <code>!!</code> work in the web UI?</b> It doesn't use the C code at all. <code>server.py</code> keeps its own Python list called <code>HISTORY</code>. When you send <code>!!</code>, the server swaps in the last command <i>before</i> calling osh. The C history code only gets exercised in interactive mode and in the last test (which pipes <code>echo first / !! / exit</code> into a real interactive osh).</span>
+    <span class="mn"><b>Тэгвэл веб UI дээр <code>!!</code> яаж ажилладаг вэ?</b> C кодыг огт ашигладаггүй. <code>server.py</code> <code>HISTORY</code> нэртэй өөрийн Python жагсаалттай. Та <code>!!</code> илгээхэд сервер osh-ийг дуудахаасаа <i>өмнө</i> сүүлийн командаар сольчихдог. C-ийн түүхийн код зөвхөн интерактив горимд болон "history replay" тестэд (жинхэнэ интерактив osh руу <code>echo first / !! / exit</code> оруулдаг) шалгагддаг.</span>
+    <span class="en"><b>So how does <code>!!</code> work in the web UI?</b> It doesn't use the C code at all. <code>server.py</code> keeps its own Python list called <code>HISTORY</code>. When you send <code>!!</code>, the server swaps in the last command <i>before</i> calling osh. The C history code only gets exercised in interactive mode and in the "history replay" test (which pipes <code>echo first / !! / exit</code> into a real interactive osh).</span>
   </div>
 </section>
 
 <!-- 6. GAPS -->
 <section class="block" id="gaps">
-  <h2><span class="mn">6 · Мэдэж байх дутагдлууд (таны хийж болох ажлууд)</span><span class="en">6 · Gaps worth knowing (and possible tasks for you)</span></h2>
-  <p class="sub mn">Эдгээрийг кодыг уншиж байхдаа олсон. IV-2-8 багийн шүүмжлэгчид shell-ийг эвдэхийг оролдоно. Тиймээс эдгээр нь таны засаж болох ажил, эсвэл Manual-ын "Known issues" хэсэгт бичих хязгаарлалт юм.</p>
-  <p class="sub en">I found these by reading the code. Reviewers from IV-2-8 will try to break the shell, so each one is either a fix you could own or a limitation to put in the Manual's "Known issues".</p>
+  <h2><span class="mn">6 · Одоогийн дутагдлууд ба цаашид засах зүйлс</span><span class="en">6 · Known gaps (and what we can still fix)</span></h2>
+  <p class="sub mn">Эдгээр дутагдлыг кодоо шалгах явцад илрүүлсэн. IV-2-8 баг манай shell-ийг шалгаж, алдаа гаргахыг оролдох тул дутагдал бүрийг засах, засаж амжихгүй бол README-ийн "Хязгаарлалт" хэсэгт тэмдэглэх шаардлагатай. Заримыг нь аль хэдийн тэмдэглэсэн.</p>
+  <p class="sub en">We found these while reading the code. Reviewers from IV-2-8 will try to break the shell, so for each one we should either fix it or list it in the README's limitations section. Some are already listed there.</p>
   <div class="gaps card" id="gapList"></div>
 </section>
 
@@ -1267,30 +1267,27 @@ const FNS=[
 
 /* ---------- 6. Gaps ---------- */
 const GAPS=[
- ['bug',B('Background jobs never finish in the web UI','Веб UI дээр background ажил хэзээ ч дуусдаггүй'),
-  B('With <code>-c</code>, osh starts <code>sleep 3 &amp;</code> and exits right away, so <code>reap_background()</code> never runs. The child is adopted by PID 1, and its event stays <b>running</b> forever. Fix idea: have the server keep one long-lived interactive osh (stdin/stdout pipes) instead of a new process per command, or have the child log its own completion.',
-    '<code>-c</code> горимд osh <code>sleep 3 &amp;</code>-ийг эхлүүлээд шууд гардаг тул <code>reap_background()</code> хэзээ ч ажилладаггүй. Хүүхдийг PID 1 өргөж авч, түүний event үүрд <b>running</b> хэвээр үлдэнэ. Засах санаа: команд бүрт шинэ процесс эхлүүлэхийн оронд сервер нэг удаан амьдардаг интерактив osh-ийг (stdin/stdout pipe-тай) барьж байх, эсвэл хүүхэд өөрөө дууссанаа бичих.')],
+ ['note',B('Background status comes from server.py, not osh','Background төлөвийг osh биш, server.py шалгадаг'),
+  B('With <code>-c</code>, osh starts <code>sleep 3 &amp;</code> and exits right away, so <code>reap_background()</code> never runs. To make up for this, <code>server.py</code> checks the PID with <code>ps</code> and switches it from <b>running</b> to <b>finished</b> a few seconds later. "finished" only means the process ended, not that it exited with code 0. The README already lists this.',
+    '<code>-c</code> горимд osh <code>sleep 3 &amp;</code>-ийг эхлүүлээд шууд гардаг тул <code>reap_background()</code> ажиллах боломжгүй. Үүнийг нөхөхийн тулд <code>server.py</code> PID-ийг <code>ps</code>-ээр шалгаж, хэдэн секундын дараа төлөвийг <b>running</b>-аас <b>finished</b> болгодог. "finished" нь процесс дууссаныг л илэрхийлэх ба exit code 0 гэсэн үг биш. Энэ нь README-д аль хэдийн бичигдсэн.')],
  ['bug',B('The UI tree is only 2 levels and splits per command','UI-ийн мод зөвхөн 2 түвшинтэй, команд бүрээр салдаг'),
-  B('Each click spawns a new osh, so the tree shows many separate osh roots, each with 1–2 children. A real "process tree" (python → osh → children, plus PPIDs) would score better. With a long-lived osh, all commands would hang under one parent.',
-    'Дарах бүрт шинэ osh үүсдэг тул модонд тус бүр 1–2 хүүхэдтэй олон тусдаа osh үндэс харагдана. Жинхэнэ "процессын мод" (python → osh → хүүхдүүд, PPID-тай) илүү оноо авна. Удаан амьдардаг osh-тэй бол бүх команд нэг эцгийн дор харагдана.')],
+  B('Each click spawns a new osh, so the tree shows many separate osh roots, each with 1–2 children. The README lists "not one continuous shell session" as a limitation. To fix it, the server could keep one long-lived interactive osh, so all commands hang under one parent.',
+    'Дарах бүрт шинэ osh үүсдэг тул модонд тус бүр 1–2 хүүхэдтэй олон тусдаа osh үндэс харагдана. README-д "нэг тасралтгүй shell session биш" гэж хязгаарлалт болгон бичсэн. Засах бол сервер нэг удаан ажилладаг интерактив osh-ийг барьж байвал бүх команд нэг эцгийн дор харагдана.')],
  ['note',B('!! in the UI bypasses the C code','UI дээрх !! нь C кодыг алгасдаг'),
-  B('<code>server.py</code> replays its own Python history, so a reviewer testing <code>!!</code> in the UI isn\'t testing <code>osh.c</code>. Mention this in the report, or fix it with the long-lived osh above.',
-    '<code>server.py</code> өөрийн Python түүхийг дахин тоглуулдаг тул UI дээр <code>!!</code> туршсан шүүмжлэгч <code>osh.c</code>-ийг шалгаагүй болно. Үүнийг тайландаа дурдах, эсвэл дээрх удаан амьдардаг osh-оор засах.')],
+  B('<code>server.py</code> replays its own Python history, so a reviewer testing <code>!!</code> in the UI isn\'t testing <code>osh.c</code>. The README doesn\'t mention this yet, so it\'s worth adding to the limitations.',
+    '<code>server.py</code> өөрийн Python түүхийг ашигладаг тул UI дээр <code>!!</code> туршихад <code>osh.c</code>-ийн код ажиллахгүй. README-д одоогоор дурдаагүй тул хязгаарлалт хэсэгт нэмэх нь зүйтэй.')],
  ['note',B('Background completion loses the command name','Background дуусахад командын нэр алга болдог'),
   B('<code>reap_background()</code> logs the string <code>"background"</code> instead of the real command, so the UI can\'t show what finished. Fix: store the pid → command pairs in a small array.',
-    '<code>reap_background()</code> жинхэнэ командын оронд <code>"background"</code> гэсэн мөр бичдэг тул UI юу дууссаныг харуулж чадахгүй. Засвар: pid → команд хосуудыг жижиг массивт хадгалах.')],
+    '<code>reap_background()</code> жинхэнэ командын оронд <code>"background"</code> гэсэн үг бичдэг тул UI аль команд дууссаныг харуулж чадахгүй. Засвар: pid → команд хосуудыг жижиг массивт хадгалах.')],
  ['idea',B('No built-in cd','Built-in cd байхгүй'),
-  B('<code>cd /tmp</code> fails with "No such file or directory", because <code>cd</code> must change the shell\'s <i>own</i> directory and can\'t be a child process. The textbook doesn\'t require it, but reviewers will try it. Fix: a few lines calling <code>chdir()</code> before <code>execute()</code>.',
-    '<code>cd /tmp</code> "No such file or directory" алдаа өгнө. Учир нь <code>cd</code> нь shell-ийн <i>өөрийнх нь</i> хавтсыг солих ёстой тул хүүхэд процесс байж болохгүй. Сурах бичиг үүнийг шаарддаггүй ч шүүмжлэгчид заавал туршина. Засвар: <code>execute()</code>-ээс өмнө <code>chdir()</code> дууддаг хэдэн мөр.')],
+  B('<code>cd /tmp</code> fails with "No such file or directory", because <code>cd</code> has to change the shell\'s <i>own</i> directory and can\'t run as a child process. It\'s listed in the README\'s limitations, but reviewers will still try it. Fix: a few lines calling <code>chdir()</code> before <code>execute()</code>.',
+    '<code>cd /tmp</code> "No such file or directory" алдаа өгнө. Учир нь <code>cd</code> нь shell-ийн <i>өөрийнх нь</i> хавтсыг солих ёстой тул хүүхэд процессоор ажиллах боломжгүй. README-ийн хязгаарлалт хэсэгт бичсэн ч шүүмжлэгчид заавал туршина. Засвар: <code>execute()</code>-ээс өмнө <code>chdir()</code> дууддаг хэдэн мөр нэмэх.')],
  ['idea',B('Only one pipe','Зөвхөн нэг pipe'),
-  B('<code>ls | sort | uniq</code> is rejected with "Invalid pipe". That\'s fine for the textbook, but list it under Known issues.',
-    '<code>ls | sort | uniq</code> нь "Invalid pipe" гэж татгалзагдана. Сурах бичгийн хувьд зүгээр ч Known issues-д бичих хэрэгтэй.')],
- ['idea',B('Tests only cover the happy core','Тестүүд зөвхөн үндсэн хэсгийг хамардаг'),
-  B('The 8 tests don\'t cover background (<code>&amp;</code>), <code>cd</code>, unknown commands (127), duplicate redirection, or unclosed quotes. Adding tests is an easy, clearly-yours contribution.',
-    '8 тест background (<code>&amp;</code>), <code>cd</code>, үл мэдэгдэх команд (127), давхар redirection, хаагдаагүй хашилтыг хамардаггүй. Тест нэмэх нь хялбар бөгөөд тодорхой таны хувь нэмэр болно.')],
- ['note',B('README still says "after the project is finished"','README-д "төсөл бүрэн хэрэгжсэний дараа" гэсэн хэвээр'),
-  B('The Quick Start doesn\'t mention <code>make test</code> or <code>python3 ui/server.py</code>, and lists an <code>examples/</code> folder that doesn\'t exist. The brief requires README Quick Start, so this needs updating before the post.',
-    'Quick Start хэсэгт <code>make test</code> болон <code>python3 ui/server.py</code> дурдагдаагүй, мөн байхгүй <code>examples/</code> хавтсыг жагсаасан. Даалгавар README Quick Start шаарддаг тул пост оруулахаас өмнө шинэчлэх хэрэгтэй.')]
+  B('<code>ls | sort | uniq</code> is rejected with "Invalid pipe". The textbook only asks for one pipe, and the README already lists this limitation.',
+    '<code>ls | sort | uniq</code> нь "Invalid pipe" алдаа өгнө. Сурах бичиг зөвхөн нэг pipe шаарддаг бөгөөд README-д хязгаарлалт болгон бичсэн.')],
+ ['idea',B('Some error cases still have no test','Зарим алдааны нөхцөлд тест байхгүй'),
+  B('There are now 16 tests (8 core + 8 error/edge cases). Still not covered: background (<code>&amp;</code>), <code>&amp;</code> not at the end, duplicate redirection, and unclosed quotes. These already have error messages in the README, so adding tests for them is quick.',
+    'Одоо 16 тест байгаа (8 үндсэн + 8 алдаа/захын нөхцөл). Гэхдээ background (<code>&amp;</code>), төгсгөлд биш <code>&amp;</code>, давхар redirection, хаагдаагүй хашилт зэрэг нөхцөлийг шалгадаггүй. Эдгээрийн алдааны мэдээлэл README-д бичигдсэн тул тест нэмэхэд амархан.')]
 ];
 const TAG={bug:B('LIMIT','ХЯЗГААР'),idea:B('IDEA','САНАА'),note:B('NOTE','ТЭМДЭГЛЭЛ')};
 $('gapList').innerHTML=GAPS.map(([t,h,d])=>`<div class="gap"><span class="tag ${t}">${TAG[t]}</span><div><b>${h}</b><br><span style="color:var(--muted)">${d}</span></div></div>`).join('');
