@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 import threading
 
+
 ROOT = Path(__file__).resolve().parents[1]
 EVENTS = Path(tempfile.gettempdir()) / f"osh_events_{os.getpid()}.tsv"
 
@@ -167,16 +168,25 @@ class Handler(BaseHTTPRequestHandler):
             )
 
             try:
-                run = subprocess.run(
-                    [str(ROOT / "osh"), "-c", cmd],
-                    cwd=ROOT,
-                    env=env,
-                    capture_output=True,
-                    text=True,
-                    timeout=6
-                )
+                with tempfile.TemporaryFile(mode="w+t") as stdout_file, \
+                     tempfile.TemporaryFile(mode="w+t") as stderr_file:
 
-                match = BG_PATTERN.search(run.stdout)
+                    run = subprocess.run(
+                        [str(ROOT / "osh"), "-c", cmd],
+                        cwd=ROOT,
+                        env=env,
+                        stdout=stdout_file,
+                        stderr=stderr_file,
+                        text=True,
+                        timeout=6
+                    )
+
+                    stdout_file.seek(0)
+                    stderr_file.seek(0)
+                    output = stdout_file.read()
+                    errors = stderr_file.read()
+
+                match = BG_PATTERN.search(output)
 
                 if match and run.returncode == 0:
                     with LOCK:
@@ -184,10 +194,11 @@ class Handler(BaseHTTPRequestHandler):
 
                 self.reply({
                     "command": cmd,
-                    "stdout": run.stdout[:20000],
-                    "stderr": run.stderr[:20000],
+                    "stdout": output[:20000],
+                    "stderr": errors[:20000],
                     "code": run.returncode
                 })
+
 
             except subprocess.TimeoutExpired:
                 self.reply(
