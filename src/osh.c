@@ -344,6 +344,31 @@ int main(int argc, char **argv) {
 
         line[strcspn(line, "\r\n")] = '\0';
 
+/* Trim whitespace from the beginning and end */
+char *start = line;
+
+while (isspace((unsigned char)*start)) {
+    start++;
+}
+
+if (start != line) {
+    memmove(line, start, strlen(start) + 1);
+}
+
+size_t len = strlen(line);
+
+while (len > 0 &&
+       isspace((unsigned char)line[len - 1])) {
+    line[--len] = '\0';
+}
+
+/* Ignore empty input */
+if (line[0] == '\0') {
+    if (single) break;
+    continue;
+}
+
+
         if (!strcmp(line, "exit"))
             break;
 
