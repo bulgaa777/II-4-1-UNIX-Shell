@@ -36,5 +36,20 @@ check(a.returncode == 0 and a.stdout.strip() == '&', 'quoted background')
 a = run(r'echo \|')
 check(a.returncode == 0 and a.stdout.strip() == '|', 'escaped pipe')
 
-print('PASS: 20 tests (echo, pipe, redirection, history, quoted operators, errors, edge cases)')
+
+# MINOR-01: Whitespace and history regression
+a = subprocess.run(
+    [str(ROOT / 'osh')],
+    input='echo FIRST | wc -c\n   \n!!\n  exit\n',
+    text=True,
+    capture_output=True,
+    timeout=8
+)
+
+check(
+    a.returncode == 0 and a.stdout.count('6\n') == 2,
+    'whitespace history and exit'
+)
+
+print('PASS: 21 tests (echo, pipe, redirection, history, quoted operators, whitespace, errors, edge cases)')
 
