@@ -22,4 +22,19 @@ a=run('ls >');check(a.returncode!=0,'redirect without filename')
 a=run('| wc -c');check(a.returncode!=0,'pipe without left command')
 a=run('echo x > /no_such_dir_123/out.txt');check(a.returncode!=0,'redirect to bad path')
 a=subprocess.run([str(ROOT/'osh')],input='\n\nexit\n',text=True,capture_output=True,timeout=8);check(a.returncode==0,'blank lines then exit')
-print('PASS: 16 tests (echo, pipe, redirection, history, errors, edge cases)')
+
+# MAJOR-02: Quoted and escaped operators
+a = run('echo "|"')
+check(a.returncode == 0 and a.stdout.strip() == '|', 'quoted pipe')
+
+a = run('echo ">"')
+check(a.returncode == 0 and a.stdout.strip() == '>', 'quoted redirect')
+
+a = run('echo "&"')
+check(a.returncode == 0 and a.stdout.strip() == '&', 'quoted background')
+
+a = run(r'echo \|')
+check(a.returncode == 0 and a.stdout.strip() == '|', 'escaped pipe')
+
+print('PASS: 20 tests (echo, pipe, redirection, history, quoted operators, errors, edge cases)')
+
