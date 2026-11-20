@@ -9,7 +9,7 @@ const root = path.resolve(__dirname, '..');
 const htmlPath = process.env.SIMULATOR_HTML || (fs.existsSync(path.join(root,'index.html'))?path.join(root,'index.html'):path.join(root,'Interactive/osh_HowItWorks.html'));
 const html = fs.readFileSync(htmlPath, 'utf8').replace(/\r/g, '');
 const script = html.split('<script>')[1].split('</script>')[0];
-new vm.Script(script); // Бүх JavaScript-ийн синтаксыг шалгана.
+new vm.Script(script);
 const embedded = html.split('id="oshSrc">')[1].split('</script>')[0].trim();
 assert.equal(embedded, fs.readFileSync(path.join(root, 'src/osh.c'), 'utf8').replace(/\r/g, '').trim(), 'embedded C source matches src/osh.c');
 const context = vm.createContext({TextEncoder});

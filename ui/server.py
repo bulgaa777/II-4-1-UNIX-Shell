@@ -1,5 +1,4 @@
 
-"""UNIX Shell Explorer - Local server."""
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from urllib.parse import urlparse
@@ -20,7 +19,6 @@ BG_PATTERN = re.compile(r"\[background\] PID (\d+)")
 
 
 def is_running(pid):
-    """Check if a process is still running."""
     try:
         check = subprocess.run(
             ["ps", "-p", str(pid), "-o", "stat="],

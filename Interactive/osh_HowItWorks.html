@@ -67,7 +67,6 @@ button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 button:disabled{opacity:.45;cursor:not-allowed}
 .chip-btn{font-size:13px;padding:5px 10px;border-radius:999px}
 
-/* Big picture */
 .arch{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:stretch}
 .arch .box{cursor:pointer;text-align:left;border:2px solid var(--line);border-radius:12px;padding:12px;background:var(--panel);transition:border-color .15s,transform .15s;position:relative}
 .arch .box:hover{transform:translateY(-2px)}
@@ -81,7 +80,6 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:6px;vertical-align:middle}
 @media(max-width:820px){.arch,.flowline{grid-template-columns:1fr 1fr}.flowline{display:none}}
 
-/* Simulator */
 .simTop{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .cmdIn{flex:1;min-width:220px;display:flex;align-items:center;gap:8px;background:var(--term-bg);border-radius:10px;padding:4px 4px 4px 12px}
 .cmdIn span{color:var(--term-ink);font-family:ui-monospace,Consolas,monospace}
@@ -159,7 +157,6 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .codeBox .ln.hl{background:var(--hl)}
 .codeLabel{font-size:12px;color:var(--muted);margin-top:12px}
 
-/* Concepts */
 .concepts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 @media(max-width:900px){.concepts{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.concepts{grid-template-columns:1fr}}
@@ -171,7 +168,6 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .concept svg .muted{fill:var(--muted)}
 .concept .eg{font-size:13px;color:var(--muted)}
 
-/* Code map */
 .mapGrid{display:grid;grid-template-columns:260px 1fr;gap:14px}
 @media(max-width:820px){.mapGrid{grid-template-columns:1fr}}
 .fnList{display:flex;flex-direction:column;gap:6px}
@@ -179,7 +175,6 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .fnList button.on{border-color:var(--accent);background:var(--accent-soft)}
 .fnList button .l{font-size:11px;color:var(--muted);display:block}
 
-/* Modes */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:760px){.two{grid-template-columns:1fr}}
 .callout{border-radius:12px;padding:14px 16px;border:1px solid var(--line);background:var(--panel)}
@@ -191,7 +186,6 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .tag.idea{background:var(--c-bg-soft);color:var(--c-bg)}
 .tag.note{background:var(--c-zombie-soft);color:var(--c-zombie)}
 
-/* Quiz */
 .quiz{display:grid;gap:10px}
 details.q{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
 details.q summary{cursor:pointer;font-weight:600}
@@ -230,7 +224,6 @@ html[lang="en"] .mn{display:none!important}
 
 <main class="wrap">
 
-<!-- 1. BIG PICTURE -->
 <section class="block" id="big">
   <h2><span class="mn">1 · Ерөнхий зураг</span><span class="en">1 · The big picture</span></h2>
   <p class="sub mn">Төсөл хоёр хэсэгтэй. <b>C shell</b> (<code>osh</code>) нь сурах бичгийн хэсэг. <b>Веб UI</b> нь багшийн нэмсэн "процессын мод" хэсэг. Хоёулаа жижиг лог файлаар дамжуулан харилцдаг. Хайрцаг бүр дээр дарж юу хийдгийг нь хараарай.</p>
@@ -246,7 +239,6 @@ html[lang="en"] .mn{display:none!important}
   <div class="card archInfo" id="archInfo"></div>
 </section>
 
-<!-- 2. SIMULATOR -->
 <section class="block" id="sim">
   <h2><span class="mn">2 · Алхам алхмаар симулятор</span><span class="en">2 · Step-by-step simulator</span></h2>
   <p class="sub mn">Команд эсвэл жишээ сонгоод <b>Ажиллуулах</b>, дараа нь <b>Дараах</b> дарна. Энэ нь <code>src/osh.c</code>-д суурилсан сургалтын загвар: бодит команд ажиллуулахгүй, PID ба файл нь виртуал. Түүх, файлууд дараагийн ажиллуулалтад хадгалагдана. <b>Шинээр эхлэх</b> бүгдийг анхны төлөвт оруулна. Файл дээр хулганаа аваачиж агуулгыг, хэмжээгээр нь хоосорсныг шалгана.</p>
@@ -284,7 +276,6 @@ html[lang="en"] .mn{display:none!important}
   </div>
 </section>
 
-<!-- 3. CONCEPTS -->
 <section class="block" id="concepts">
   <h2><span class="mn">3 · Shell-ийн гол дуудлагууд ба zombie төлөв</span><span class="en">3 · Key shell calls and the zombie state</span></h2>
   <p class="sub mn">Эхний таван карт нь процесс, оролт/гаралтын дуудлага. <code>execvp()</code> нь exec бүлгийн сангийн функц; <b>zombie</b> бол дуудлага биш, дууссан процессын төлөв. Файл нээх, хаахад <code>open()</code>, <code>close()</code> мөн ашиглана.</p>
@@ -292,7 +283,6 @@ html[lang="en"] .mn{display:none!important}
   <div class="concepts" id="conceptGrid"></div>
 </section>
 
-<!-- 4. CODE MAP -->
 <section class="block" id="code">
   <h2><span class="mn">4 · <code>src/osh.c</code>-ийн кодын зураглал</span><span class="en">4 · Code map of <code>src/osh.c</code></span></h2>
   <p class="sub mn">Файл ойролцоогоор 400 мөр, 6 функцтэй. Аль нэгийг нь дарж энгийн тайлбартай нь уншаарай.</p>
@@ -303,7 +293,6 @@ html[lang="en"] .mn{display:none!important}
   </div>
 </section>
 
-<!-- 5. MODES -->
 <section class="block" id="modes">
   <h2><span class="mn">5 · Нэг программыг ажиллуулах 2 арга</span><span class="en">5 · Two ways to run the same program</span></h2>
   <p class="sub mn"><code>main()</code> аргументуудаа шалгаад горимоо сонгоно. Веб UI болон тестүүд хоёр дахь горимыг ашигладаг тул энэ нь чухал.</p>
@@ -337,7 +326,6 @@ $ ./osh -c "!!"
   </div>
 </section>
 
-<!-- 6. GAPS -->
 <section class="block" id="gaps">
   <h2><span class="mn">6 · Одоогийн дутагдлууд ба цаашид засах зүйлс</span><span class="en">6 · Known gaps (and what we can still fix)</span></h2>
   <p class="sub mn">Эдгээр дутагдлыг кодоо шалгах явцад илрүүлсэн. IV-2-8 баг манай shell-ийг шалгаж, алдаа гаргахыг оролдох тул дутагдал бүрийг засах, засаж амжихгүй бол README-ийн "Хязгаарлалт" хэсэгт тэмдэглэх шаардлагатай. Заримыг нь аль хэдийн тэмдэглэсэн.</p>
@@ -345,7 +333,6 @@ $ ./osh -c "!!"
   <div class="gaps card" id="gapList"></div>
 </section>
 
-<!-- 7. QUIZ -->
 <section class="block" id="quiz">
   <h2><span class="mn">7 · Хамгаалалтын асуултууд</span><span class="en">7 · Defense quiz</span></h2>
   <p class="sub mn">Багш эсвэл шүүмжлэгчийн асууж магадгүй асуултууд. Эхлээд толгойдоо хариулаад дараа нь картыг нээгээрэй.</p>
@@ -769,13 +756,12 @@ int main(int argc, char **argv) {
 "use strict";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-// Bilingual HTML: both versions are rendered, CSS shows the one matching <html lang>.
+// Хоёр хэлийг зэрэг үүсгээд CSS-ээр нэгийг нь харуулна.
 const B=(en,mn)=>`<span class="en">${en}</span><span class="mn">${mn}</span>`;
 const SRC=$('oshSrc').textContent.replace(/\r/g,'').replace(/^\n/,'').split('\n');
-// Line numbers as in the repo (the file starts with one empty line)
+// Эх кодын эхний хоосон мөрийг мөрийн дугаарт тооцно.
 const LINES=[''].concat(SRC);
 
-/* language */
 (function(){
   const root=document.documentElement;
   let lang='mn';
@@ -785,7 +771,6 @@ const LINES=[''].concat(SRC);
   set(lang);
 })();
 
-/* theme */
 (function(){
   const root=document.documentElement;
   try{const t=localStorage.getItem('osh-theme');if(t)root.setAttribute('data-theme',t);}catch(e){}
@@ -809,7 +794,6 @@ function renderCode(box,from,to,hlFrom,hlTo,ctx){
   if(first)box.scrollTop=Math.max(0,first.offsetTop-box.offsetTop-40);
 }
 
-/* ---------- 1. Big picture ---------- */
 const ARCH=[
  {ic:'🖥️',t:B('Browser UI','Хөтөч дээрх UI'),f:'ui/index.html',d:B(
   `<p>A single web page with a terminal box, example buttons, a <b>Process tree</b> panel and a <b>Command history</b> panel.</p><p>When you press Run it sends <code>POST /api/run {"command": "..."}</code>. Every 2 seconds it calls <code>GET /api/events</code> and redraws the tree from what comes back. "Reset view" only hides the PIDs it has already seen. It doesn't delete anything.</p><p>The tree it draws has two levels: an <b>osh</b> parent node, with each command's children under it. A new osh process starts for every command, so each command gets its own parent node.</p>`,
@@ -839,14 +823,13 @@ const ARCH=[
   show(2);
 })();
 
-/* ---------- 2. Simulator ---------- */
 const CWD='/home/student/II-4-1-UNIX-Shell';
 const BASE_FILES={'Makefile':'CC=cc\nCFLAGS=-std=c11 -Wall -Wextra -O2\n','README.md':'# II-4-1 — UNIX Shell\n','docs':null,'osh':'\x7fELF (compiled program)','.gitignore':'*.o\n','src':null,'tests':null,'ui':null,'names.txt':'Tuvshin\nAnu\nBat\nZaya\nBat\n'};
 let FS={},history='',nextPid=4101,clock=1761578400,evAll=[],lastExit=0;
 function resetWorld(){FS=JSON.parse(JSON.stringify(BASE_FILES));history='';nextPid=4101;evAll=[];lastExit=0;}
 resetWorld();
 
-// Виртуал замыг одоогийн хавтастай харьцуулна.
+// Виртуал файлын замыг нэг хэлбэрт оруулна.
 function fileKey(path){
   const parts=(path.startsWith('/')?path:CWD+'/'+path).split('/');
   const clean=[];
@@ -868,7 +851,6 @@ function openError(files,path,writing=false){
   return null;
 }
 
-// Mirrors tokenize() in osh.c (quotes, backslash, | < > & as single tokens)
 function tokenize(p){
   const out=[];let i=0;
   while(i<p.length){
@@ -893,7 +875,7 @@ function tokenize(p){
   }
   return {tokens:out};
 }
-// Mirrors the parsing loop in execute()
+// C код шиг хашилт арилсан token-оос операторыг танина.
 function parse(tokens){
   const r={tokens,roles:tokens.map(()=>''),left:[],right:[],infile:null,outfile:null,bg:false,pipe:false,error:null,errLine:null};
   let n=tokens.length;
@@ -920,7 +902,6 @@ function parse(tokens){
   return r;
 }
 
-// Pretend programs. Return {out, err, code, ms}
 function fakeExec(argv,stdin,files=FS,inputDirectory=false){
   const [p,...a]=argv;
   const fileText=f=>fileKey(f)==='.'?null:hasFile(files,fileKey(f))?files[fileKey(f)]:undefined;
@@ -976,7 +957,6 @@ const FD_LBL={'keyboard':B('keyboard','гар'),'screen':B('screen','дэлгэ�
 const fdLabel=v=>v.startsWith('file ')?B('file ','файл ')+esc(v.slice(5)):(FD_LBL[v]||esc(v));
 const ROLE_LBL={cmd:B('cmd 1','команд 1'),cmd2:B('cmd 2','команд 2'),pipe:'pipe',redir:B('redirect','чиглүүлэх'),file:B('file','файл'),amp:'background',bad:B('error','алдаа')};
 
-// Build all steps for one command line.
 function buildSteps(raw){
   const steps=[];
   const S={procs:[{pid:4100,name:'osh',state:'ready',fd:{0:'keyboard',1:'screen',2:'screen'},kids:[]}],term:[],stdout:'',stderr:'',exitCode:null,ev:evAll.slice(),newEv:0,pipe:null,files:Object.assign({},FS),newFiles:[]};
@@ -1028,7 +1008,6 @@ function buildSteps(raw){
 
   if(!line){push({title:B('Empty line → nothing to do','Хоосон мөр → хийх зүйлгүй'),code:[397,398],text:B('An empty line skips <code>execute()</code>, keeps history and the previous result, and returns to the prompt. A fresh shell starts with result 0.','Хоосон мөр <code>execute()</code>-ийг алгасаж, түүх болон өмнөх үр дүнг хэвээр үлдээнэ. Шинэ shell-ийн анхны үр дүн 0.')});return finish(lastExit);}
 
-  // tokenize
   const tk=tokenize(line);
   if(tk.error){
     if(tk.error==='Unclosed quote')emit('Unclosed quote\n',true);
@@ -1079,7 +1058,6 @@ function buildSteps(raw){
       analogy:B('A pipe is a tube with a write end and a read end. Whatever goes into one end comes out the other, in order.','Pipe бол бичих болон унших үзүүртэй хоолой. Нэг үзүүрээр орсон бүхэн нөгөө үзүүрээр дарааллаараа гарна.')});
   }
 
-  // children
   const kids=[];
   const FS_after=Object.assign({},FS);
   for(let k=0;k<count;k++){
@@ -1094,7 +1072,6 @@ function buildSteps(raw){
       analogy:B('Photocopying yourself. The copy has your memories, but its badge says "child".','Өөрийгөө хувилж байгаа мэт. Хуулбар таны бүх санамжтай ч энгэрийн тэмдэг дээр нь "хүүхэд" гэж бичээстэй.')});
     child.isNew=false;
 
-    // dup2 setup
     const changes=[];
     if(count===2){
       if(k===0){child.fd[1]='pipe write end';changes.push('dup2(fds[1], 1): stdout → pipe');}
@@ -1155,7 +1132,6 @@ function buildSteps(raw){
              'Эцэг процесс pipe-ийг өөрөө ашигладаггүй тул хоёр үзүүрийг нь хаана. Энэ чухал: уншигч (команд 2) зөвхөн <b>бүх</b> бичих үзүүр хаагдсан үед файлын төгсгөл (EOF)-ийг хардаг. Эцэг процесс өөрийн хуулбарыг нээлттэй үлдээвэл <code>wc</code> шиг команд үүрд хүлээнэ.')});
   }
 
-  // Run programs (compute output)
   let pipeData='';
   const results=[];
   kids.forEach((c,k)=>{
@@ -1275,7 +1251,6 @@ $('examples').innerHTML=EXAMPLES.map(([c,l])=>`<button class="chip-btn" data-c="
 $('examples').onclick=e=>{const b=e.target.closest('button');if(b){$('cmd').value=b.dataset.c;run();}};
 run();
 
-/* ---------- 3. Concepts ---------- */
 const svgBox=(x,y,w,h,label,color,sub)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="none" stroke="${color}" stroke-width="2"/><text x="${x+w/2}" y="${y+h/2+(sub?-2:4)}" text-anchor="middle">${label}</text>${sub?`<text class="muted" x="${x+w/2}" y="${y+h/2+13}" text-anchor="middle" style="font-size:10px">${sub}</text>`:''}`;
 const arrow=(x1,y1,x2,y2,color)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2" marker-end="url(#ah)"/>`;
 const defs=c=>`<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="${c}"/></marker></defs>`;
@@ -1289,7 +1264,6 @@ const CONCEPTS=[
 ];
 $('conceptGrid').innerHTML=CONCEPTS.map(c=>`<div class="card concept"><h3><code>${c.n}</code></h3><div class="mini">${c.svg}</div><p>${c.d}</p><div class="eg mono">${c.eg}</div></div>`).join('');
 
-/* ---------- 4. Code map ---------- */
 const FNS=[
  {n:'main()',r:[315,405],d:B('The entry point. It reads <code>OSH_EVENTS</code>, picks interactive or <code>-c</code> mode, then loops: reap background jobs → prompt → read → handle <code>exit</code> / <code>!!</code> → save history → <code>execute()</code>.',
    'Эхлэх цэг. <code>OSH_EVENTS</code>-ийг уншиж, интерактив эсвэл <code>-c</code> горимыг сонгоод давтана: background ажлуудыг цуглуулах → prompt → унших → <code>exit</code> / <code>!!</code> шийдэх → түүх хадгалах → <code>execute()</code>.')},
@@ -1312,7 +1286,6 @@ const FNS=[
   show(1);
 })();
 
-/* ---------- 6. Gaps ---------- */
 const GAPS=[
  ['note',B('Background status comes from server.py, not osh','Background төлөвийг osh биш, server.py шалгадаг'),
   B('With <code>-c</code>, osh starts <code>sleep 3 &amp;</code> and exits right away, so <code>reap_background()</code> never runs. To make up for this, <code>server.py</code> checks the PID with <code>ps</code> and switches it from <b>running</b> to <b>finished</b> a few seconds later. "finished" only means the process ended, not that it exited with code 0. The README already lists this.',
@@ -1339,7 +1312,6 @@ const GAPS=[
 const TAG={bug:B('LIMIT','ХЯЗГААР'),idea:B('IDEA','САНАА'),note:B('NOTE','ТЭМДЭГЛЭЛ')};
 $('gapList').innerHTML=GAPS.map(([t,h,d])=>`<div class="gap"><span class="tag ${t}">${TAG[t]}</span><div><b>${h}</b><br><span style="color:var(--muted)">${d}</span></div></div>`).join('');
 
-/* ---------- 7. Quiz ---------- */
 const QUIZ=[
  [B('Why does a shell need fork() AND exec()? Why not just exec?','Shell яагаад fork() БОЛОН exec() хоёуланг нь хэрэглэдэг вэ? Зүгээр exec хийж болохгүй гэж үү?'),
   B('exec replaces the current program. If osh called exec directly, osh itself would turn into <code>ls</code> and disappear, and there would be no prompt afterwards. So osh first <b>forks</b> a copy and lets the copy exec, while the original stays alive to wait and show the next prompt.',

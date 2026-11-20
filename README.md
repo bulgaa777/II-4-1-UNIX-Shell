@@ -11,7 +11,7 @@ C хэлээр бичсэн энгийн UNIX shell (`osh`). Хэрэглэгч�
 |---|---|
 | Эцсийн тайлан | [docs/II-4-1_BD1_Report.pdf](docs/II-4-1_BD1_Report.pdf) |
 | Хэрэглэгчийн гарын авлага | [docs/II-4-1_Manual.pdf](docs/II-4-1_Manual.pdf) |
-| Интерактив тайлбар (БД2) | [Симулятор нээх — Vercel](https://osh-interactive-simulator.vercel.app/) · [Мөнхбаярын source repo](https://github.com/mubabne/osh-interactive-simulator) (private) |
+| Интерактив тайлбар (БД2) | [Симулятор нээх — Vercel](https://osh-interactive-simulator.vercel.app/)  [Repo](https://github.com/mubabne/osh-interactive-simulator) (private) |
 | Тестийн үр дүн | `PASS: 16 tests` — Ubuntu (VirtualBox), Linux Mint, macOS |
 
 ---
