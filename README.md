@@ -14,6 +14,12 @@ C хэлээр бичсэн энгийн UNIX shell (`osh`). Хэрэглэгч�
 | Интерактив тайлбар (БД2) | [Симулятор нээх — Vercel](https://osh-interactive-simulator.vercel.app/)  [Repo](https://github.com/mubabne/osh-interactive-simulator) (private) |
 | Тестийн үр дүн | `PASS: 16 tests` — Ubuntu (VirtualBox), Linux Mint, macOS |
 
+БД2-ийн дахин туршилтыг **Ubuntu 24.04.4 LTS (VirtualBox)** дээр хийв: 70 simulator/C parity шалгалт, 16 C shell тест PASS. [Орчин ба лог](docs/evidence/virtualbox/environment.json) · [Шинэ screenshot-ууд](docs/screenshots/virtualbox/).
+
+![Ubuntu VirtualBox дээрх 70 болон 16 тестийн үр дүн](docs/screenshots/virtualbox/00-ubuntu-tests.png)
+
+![Ubuntu Firefox дээр: файл 0 B, командын алдаа 127](docs/screenshots/virtualbox/02-failed-command-truncation.png)
+
 ---
 
 ## Агуулга

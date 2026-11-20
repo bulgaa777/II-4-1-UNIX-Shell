@@ -13,7 +13,11 @@
 - GitHub Actions: Ubuntu 26.04.1, Node.js 22.23.4, C11 compiler; **70 simulator checks (C parity enabled)** болон **16 C shell tests** PASS. [Баталгаажсан run](https://github.com/mubabne/osh-interactive-simulator/actions/runs/44740359393).
 - Parity шалгалтаар 44 нэг команд, 5 файлтай scenario, 7 интерактив session-ийг бодит C shell-тэй stdout/stderr/exit code/файлаар харьцуулсан. Үлдсэн шалгалтууд нь snapshot, reset, background загвар, тайлбарын regression.
 - [Simulator лог](evidence/simulator-results.txt), [C shell лог](evidence/c-shell-results.txt), [өмнөх/дараах JSON](evidence/before-after.json).
-- Браузер: Chrome, desktop болон 390 × 844 viewport. Хуудас бүхлээрээ баруун тийш хальсангүй; навигац өөрийн horizontal scroll-той. MN/EN, theme, reset, keyboard алхам, background prompt, шинэ quiz тайлбарыг шалгасан.
+- Анхны браузерын шалгалт: Windows Chrome, desktop болон 390 × 844 viewport. Хуучин зургууд `screenshots/legacy-windows/` дотор хадгалагдсан.
+- **Бодит VM-ийн дахин туршилт:** хэрэглэгчийн `ubuntu` VirtualBox VM; Ubuntu 24.04.4 LTS, kernel 7.0.0-42-generic, x86_64, X11; 4 GB RAM, 2 vCPU. GCC 13.3.0, Node.js 22.23.1, Python 3.12.3. **70 simulator/C parity шалгалт, 16 C shell тест PASS.** [Орчин ба SHA256](evidence/virtualbox/environment.json), [simulator лог](evidence/virtualbox/simulator-results.txt), [C лог](evidence/virtualbox/c-shell-results.txt).
+- VM-ийн Firefox 147.0.3 дээр live Vercel хуудасны redirection, алдаа, хоосон/зайтай оролт, background, MN/EN тайлбар, quiz-ийг шалгаж зураг авсан. [Браузерын үр дүн](evidence/virtualbox/browser-checks.json).
+- Ubuntu Firefox-ийн нарийн цонхны бодит өргөн 500 px, өндөр 758 px, document өргөн 488 px байсан. Firefox 390 px хүсэлтийг 500 px-ээр хязгаарласан. Энэ VM дээр 390 px mobile шалгалт хийсэн гэж үзээгүй.
+- GCC build амжилттай. Суурь C кодын `write()`-ийн буцаах утгыг үл тоосон warning хэвээр; [build лог](evidence/virtualbox/build.txt). Энэ нь SUGGESTION-03-ын тусдаа ажил.
 - [Live Vercel](https://osh-interactive-simulator.vercel.app/). Веб нь нийтэд нээлттэй; source repo private.
 
 ## Өмнөх/дараах
@@ -31,21 +35,22 @@
 
 ## Screenshot-ийн тайлбар
 
-Зургууд нь ажиллаж буй браузераас авсан. Файл, PID, лог нь симуляторын виртуал өгөгдөл; OS-оос шууд хэмжсэн screenshot гэж тайлбарлахгүй.
+Үндсэн шинэ зургуудыг хэрэглэгчийн ажиллаж буй Ubuntu VM-ээс авсан. `00`, `01` нь бодит C программын гаралт; `02`–`08` нь Ubuntu Firefox доторх сургалтын симулятор. Тэдгээр браузерын файл, PID, лог нь виртуал загварын өгөгдөл. `09`-ийг Ubuntu доторх headless Firefox-оос авсан.
 
 | Зураг | Тайланд хэрэглэх тайлбар |
 |---|---|
-| `screenshots/01-vercel-deployed.jpg` | Vercel production deployment амжилттай. |
-| `screenshots/02-failed-command-truncation.jpg` | Команд олдохгүй ч output 0 B болсон; stderr ба exit 127. |
-| `screenshots/03-missing-input-preserves-output.jpg` | Input нээх алдаа, exit 1; output өмнөх 4 B хэвээр. |
-| `screenshots/04-whitespace-no-error.jpg` | Зөвхөн зайтай оролт алдаагүй, exit 0. |
-| `screenshots/05-empty-input-no-child.jpg` | Хоосон оролт шинэ child үүсгэхгүй, exit 0. |
-| `screenshots/06-background-prompt.jpg` | Background child ажиллаж байхад prompt буцсан загварын алхам. |
-| `screenshots/07-concepts-mn.jpg` | Зассан гарчиг, execvp болон zombie-ийн ялгаа. |
-| `screenshots/08-defense-quiz-en.jpg` | Файл exec-ээс өмнө хоосордог тухай хамгаалалтын асуулт. |
-| `screenshots/09-mobile-layout.jpg` | 390 × 844 хэмжээний симуляторын харагдац. |
+| `screenshots/virtualbox/00-ubuntu-tests.png` | Ubuntu VM дотор 70 parity шалгалт, 16 C тест давсан. |
+| `screenshots/virtualbox/01-real-c-shell-edge-cases.png` | Бодит C shell: truncate, input алдаа, хоосон/зайтай оролтын exit code ба файлын хэмжээ. |
+| `screenshots/virtualbox/02-failed-command-truncation.png` | Ubuntu Firefox: команд олдохгүй ч output 0 B; stderr ба exit 127. |
+| `screenshots/virtualbox/03-missing-input-preserves-output.png` | Input нээх алдаа, exit 1; output өмнөх 4 B хэвээр. |
+| `screenshots/virtualbox/04-whitespace-no-error.png` | Зөвхөн зайтай оролт алдаагүй, exit 0. |
+| `screenshots/virtualbox/05-empty-input-no-child.png` | Хоосон оролт шинэ child үүсгэхгүй, exit 0. |
+| `screenshots/virtualbox/06-background-prompt.png` | Background child ажиллаж байхад prompt буцсан загварын алхам. |
+| `screenshots/virtualbox/07-concepts-mn.png` | Зассан гарчиг, execvp болон zombie-ийн ялгаа. |
+| `screenshots/virtualbox/08-defense-quiz-en.png` | Файл exec-ээс өмнө хоосордог тухай хамгаалалтын асуулт. |
+| `screenshots/virtualbox/09-narrow-layout.png` | Ubuntu Firefox-ийн 500 px өргөнтэй нарийн харагдац. |
 
-Тайланд 02, 03, 07 зургийг сонгоход үндсэн хоёр review саналын нотолгоо харагдана.
+Тайланд `00`, `01`, `02`, `07`-оос сонгож болно. Өмнөх Vercel deployment-ийн зураг нь `screenshots/legacy-windows/01-vercel-deployed.jpg`; энэ нь VM туршилтын зураг биш.
 
 ## Үлдсэн хязгаарлалт
 

@@ -1,0 +1,147 @@
+{
+  "os": "Ubuntu 24.04.4 LTS",
+  "kernel": "7.0.0-42-generic",
+  "virtualization": "oracle",
+  "url": "https://osh-interactive-simulator.vercel.app/",
+  "session_type": "x11",
+  "checks": [
+    {
+      "command": "echo old > out.txt",
+      "term": "osh> echo old > out.txt\nosh> ",
+      "status": "exit code: 0",
+      "files": "📄 .gitignore · 4 B\n📄 Makefile · 40 B\n📄 README.md · 24 B\n📁 docs\n📄 names.txt · 25 B\n📄 osh · 23 B\n📄 out.txt · 4 B\n📁 src\n📁 tests\n📁 ui",
+      "childCount": 1
+    },
+    {
+      "command": "no_such_cmd_xyz_123 > out.txt",
+      "term": "osh> no_such_cmd_xyz_123 > out.txt\nno_such_cmd_xyz_123: No such file or directory\nosh> ",
+      "status": "exit code: 127",
+      "files": "📄 .gitignore · 4 B\n📄 Makefile · 40 B\n📄 README.md · 24 B\n📁 docs\n📄 names.txt · 25 B\n📄 osh · 23 B\n📄 out.txt · 0 B\n📁 src\n📁 tests\n📁 ui",
+      "childCount": 1
+    },
+    {
+      "command": "echo old > out.txt",
+      "term": "osh> echo old > out.txt\nosh> ",
+      "status": "exit code: 0",
+      "files": "📄 .gitignore · 4 B\n📄 Makefile · 40 B\n📄 README.md · 24 B\n📁 docs\n📄 names.txt · 25 B\n📄 osh · 23 B\n📄 out.txt · 4 B\n📁 src\n📁 tests\n📁 ui",
+      "childCount": 1
+    },
+    {
+      "command": "cat > out.txt < missing.txt",
+      "term": "osh> cat > out.txt < missing.txt\nmissing.txt: No such file or directory\nosh> ",
+      "status": "exit code: 1",
+      "files": "📄 .gitignore · 4 B\n📄 Makefile · 40 B\n📄 README.md · 24 B\n📁 docs\n📄 names.txt · 25 B\n📄 osh · 23 B\n📄 out.txt · 4 B\n📁 src\n📁 tests\n📁 ui",
+      "childCount": 1
+    },
+    {
+      "command": "   ",
+      "term": "osh>    \nosh> ",
+      "status": "exit code: 0",
+      "files": "📄 .gitignore · 4 B\n📄 Makefile · 40 B\n📄 README.md · 24 B\n📁 docs\n📄 names.txt · 25 B\n📄 osh · 23 B\n📄 out.txt · 4 B\n📁 src\n📁 tests\n📁 ui",
+      "childCount": 0
+    },
+    {
+      "command": "",
+      "term": "osh> \nosh> ",
+      "status": "exit code: 0",
+      "files": "📄 .gitignore · 4 B\n📄 Makefile · 40 B\n📄 README.md · 24 B\n📁 docs\n📄 names.txt · 25 B\n📄 osh · 23 B\n📄 out.txt · 4 B\n📁 src\n📁 tests\n📁 ui",
+      "childCount": 0
+    },
+    {
+      "command": "sleep 3 &",
+      "term": "osh> sleep 3 &",
+      "status": "",
+      "files": "📄 .gitignore · 4 B\n📄 Makefile · 40 B\n📄 README.md · 24 B\n📁 docs\n📄 names.txt · 25 B\n📄 osh · 23 B\n📄 out.txt · 4 B\n📁 src\n📁 tests\n📁 ui",
+      "childCount": 0
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "02-failed-command-truncation.png",
+      "source": "Ubuntu X11 desktop",
+      "size": [
+        1360,
+        765
+      ]
+    },
+    {
+      "file": "03-missing-input-preserves-output.png",
+      "source": "Ubuntu X11 desktop",
+      "size": [
+        1360,
+        765
+      ]
+    },
+    {
+      "file": "04-whitespace-no-error.png",
+      "source": "Ubuntu X11 desktop",
+      "size": [
+        1360,
+        765
+      ]
+    },
+    {
+      "file": "05-empty-input-no-child.png",
+      "source": "Ubuntu X11 desktop",
+      "size": [
+        1360,
+        765
+      ]
+    },
+    {
+      "file": "06-background-prompt.png",
+      "source": "Ubuntu X11 desktop",
+      "size": [
+        1360,
+        765
+      ]
+    },
+    {
+      "file": "07-concepts-mn.png",
+      "source": "Ubuntu X11 desktop",
+      "size": [
+        1360,
+        765
+      ]
+    },
+    {
+      "file": "08-defense-quiz-en.png",
+      "source": "Ubuntu X11 desktop",
+      "size": [
+        1360,
+        765
+      ]
+    },
+    {
+      "file": "09-narrow-layout.png",
+      "source": "Ubuntu Firefox headless viewport",
+      "viewport": {
+        "width": 500,
+        "height": 758,
+        "pageWidth": 488
+      }
+    }
+  ],
+  "browser_version": "147.0.3",
+  "driver_version": "0.36.0",
+  "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:147.0) Gecko/20100101 Firefox/147.0",
+  "viewport": {
+    "width": 1294,
+    "height": 648
+  },
+  "narrow_viewport": {
+    "requested_width": 390,
+    "actual": {
+      "width": 500,
+      "height": 758,
+      "pageWidth": 488
+    },
+    "note": "Firefox enforces a 500px minimum window width in this environment."
+  },
+  "passed": true,
+  "quiz_check": {
+    "open": true,
+    "contains": "O_TRUNC",
+    "answer_visible": true
+  }
+}

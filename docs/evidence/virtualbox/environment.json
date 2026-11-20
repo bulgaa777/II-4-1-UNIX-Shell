@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-20T23:33:33.530646+08:00",
+  "virtualization": "oracle",
+  "os": "Ubuntu 24.04.4 LTS",
+  "kernel": "7.0.0-42-generic",
+  "architecture": "x86_64",
+  "session": "x11",
+  "workspace": "/tmp/osh-bd2-virtualbox-3j60rp9j",
+  "source_sha256": {
+    "src/osh.c": "32fdae1c9c0c1f39e203031f7002e1f8a1f821a8c0bf7e08b5543bca5e1376bc",
+    "tests/test_simulator.cjs": "2c6729edea1cd5e495d86146d0a28568040e3d70554bd865ed09224df6bc4fa3",
+    "Interactive/osh_HowItWorks.html": "eacee6d0c6553e8a9854ba119e6aaf980c86337c342dc9302a22d40a708c0a88"
+  },
+  "checks": [
+    {
+      "command": [
+        "make"
+      ],
+      "exit_code": 0,
+      "log": "build.txt"
+    },
+    {
+      "command": [
+        "node",
+        "tests/test_simulator.cjs",
+        "--compare-c"
+      ],
+      "exit_code": 0,
+      "log": "simulator-results.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "tests/test_shell.py"
+      ],
+      "exit_code": 0,
+      "log": "c-shell-results.txt"
+    }
+  ],
+  "node": "v22.23.1",
+  "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "python": "3.12.3",
+  "passed": true
+}

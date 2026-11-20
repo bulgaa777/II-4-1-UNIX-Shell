@@ -56,4 +56,8 @@ GitHub → Actions → **Simulator and C parity** → ногоон run → **tes
 
 ## Screenshot
 
-`docs/screenshots/` дахь зураг нь ажиллаж буй браузераас авсан нотолгоо. Тайланд команд, exit code, файлын хэмжээтэй нь тайлбарлан хэрэглэнэ. Зургийн жагсаалт, баталгаажсан тестийн үр дүнг [REVIEW_RESPONSES.md](REVIEW_RESPONSES.md)-ээс үзнэ.
+Шинэ нотолгоо нь `docs/screenshots/virtualbox/` дотор байна. `00-ubuntu-tests.png`, `01-real-c-shell-edge-cases.png` нь бодит Ubuntu VM-ийн терминал; `02`–`08` нь тэр VM-ийн Firefox доторх симулятор. Браузерын PID, файлууд нь сургалтын загварын өгөгдөл хэвээр.
+
+`09-narrow-layout.png` нь Ubuntu доторх headless Firefox-ийн 500 px өргөнтэй харагдац. Энэ орчинд Firefox цонхны өргөнийг 390 px болгох хүсэлтийг 500 px-ээр хязгаарласан тул 390 px гэж тайлагнаагүй. Бодит хэмжээг `docs/evidence/virtualbox/browser-checks.json`-д хадгалсан.
+
+VM-ийн орчин, файлын SHA256, 70/16 тестийн лог нь `docs/evidence/virtualbox/` дотор. Өмнөх Windows зургуудыг `docs/screenshots/legacy-windows/` руу архивласан. Тайланд шинэ `virtualbox/` зургуудыг хэрэглэнэ. Зургийн жагсаалтыг [REVIEW_RESPONSES.md](REVIEW_RESPONSES.md)-ээс үзнэ.
