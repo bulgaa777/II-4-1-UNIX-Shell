@@ -11,7 +11,7 @@ C хэлээр бичсэн энгийн UNIX shell (`osh`). Хэрэглэгч�
 |---|---|
 | Эцсийн тайлан | [docs/II-4-1_BD1_Report.pdf](docs/II-4-1_BD1_Report.pdf) |
 | Хэрэглэгчийн гарын авлага | [docs/II-4-1_Manual.pdf](docs/II-4-1_Manual.pdf) |
-| Интерактив тайлбар | [OS хэрхэн ажилладаг вэ?](https://bulgaa777.github.io/II-4-1-UNIX-Shell/Interactive/osh_HowItWorks.html) |
+| Интерактив тайлбар (БД2) | [Симулятор нээх — Vercel](https://osh-interactive-simulator.vercel.app/) · [Мөнхбаярын source repo](https://github.com/mubabne/osh-interactive-simulator) (private) |
 | Тестийн үр дүн | `PASS: 16 tests` — Ubuntu (VirtualBox), Linux Mint, macOS |
 
 ---
@@ -168,7 +168,9 @@ Shell нь **Read → Eval → Print** давталтаар ажиллана:
                          stdout → fds[1]   stdin ← fds[0]
 ```
 
-Алхам алхмаар, анимацитай тайлбарыг [интерактив хуудаснаас](https://bulgaa777.github.io/II-4-1-UNIX-Shell/Interactive/osh_HowItWorks.html) үзнэ үү.
+Алхам алхмаар тайлбарыг [БД2 симулятороос](https://osh-interactive-simulator.vercel.app/) үзнэ. MINOR-03, SUGGESTION-02-ийн засвар, гар туршилт, screenshot, CI нотолгоог [тусдаа repository](https://github.com/mubabne/osh-interactive-simulator)-д хадгалсан (private; үзэхэд эрх хэрэгтэй). Локал хувилбар нь `Interactive/osh_HowItWorks.html`.
+
+Симуляторын шинэ тест: `node tests/test_simulator.cjs` (Node.js 20+). Linux/macOS дээр бодит C кодтой харьцуулах бол `node tests/test_simulator.cjs --compare-c`. [Гар туршилтын заавар](docs/Interactive_Testing.md).
 
 ---
 
