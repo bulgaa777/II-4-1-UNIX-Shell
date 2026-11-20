@@ -53,3 +53,12 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# Local generated files (not tracked by Git)
+.DS_Store
+/osh
+/output.txt
+
+# Python cache files
+__pycache__/
+*.pyc
