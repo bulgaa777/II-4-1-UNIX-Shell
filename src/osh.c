@@ -57,7 +57,8 @@ static void release(char **args, int count) {
         free(args[i]);
 }
 
-static int tokenize(const char *p, char **args) {
+
+static int tokenize(const char *p, char **args, int *ops) {
     int n = 0;
 
     while (*p) {
@@ -69,8 +70,11 @@ static int tokenize(const char *p, char **args) {
         char token[MAXLINE];
         size_t j = 0;
         char quote = 0;
+        int is_operator = 0;
+
 
         if (strchr("|<>&", *p)) {
+             is_operator = 1;
             token[j++] = *p++;
         } else {
             while (*p) {
@@ -114,6 +118,7 @@ static int tokenize(const char *p, char **args) {
         token[j] = '\0';
         args[n] = strdup(token);
         if (!args[n]) goto bad;
+        ops[n] = is_operator;
         n++;
     }
 
@@ -140,10 +145,11 @@ static void reap_background(void) {
 
 static int execute(const char *line) {
     char *args[MAXARGS] = {0};
+    int ops[MAXARGS] = {0};
     char *left[MAXARGS] = {0};
     char *right[MAXARGS] = {0};
 
-    int total = tokenize(line, args);
+    int total = tokenize(line, args, ops);
     if (total < 0) return 2;
     if (total == 0) return 0;
 
@@ -156,7 +162,7 @@ static int execute(const char *line) {
     char *infile = NULL;
     char *outfile = NULL;
 
-    if (!strcmp(args[n - 1], "&")) {
+    if (ops[n - 1] && !strcmp(args[n - 1], "&")){
         background = 1;
         n--;
     }
@@ -168,7 +174,8 @@ static int execute(const char *line) {
     }
 
     for (int i = 0; i < n; i++) {
-        if (!strcmp(args[i], "|")) {
+        if (ops[i] && !strcmp(args[i], "|")) {
+
             if (pipe_seen || !l) {
                 fprintf(stderr, "Invalid pipe\n");
                 result = 2;
@@ -178,13 +185,13 @@ static int execute(const char *line) {
             continue;
         }
 
-        if (!strcmp(args[i], "<") ||
-            !strcmp(args[i], ">")) {
+        if (ops[i] && (!strcmp(args[i], "<") || !strcmp(args[i], ">"))) {
+
 
             int input = !strcmp(args[i], "<");
 
             if (i + 1 >= n ||
-                strchr("|<>&", args[i + 1][0])) {
+                ops[i + 1]) {
                 fprintf(stderr, "Missing redirection filename\n");
                 result = 2;
                 goto cleanup;
@@ -205,7 +212,7 @@ static int execute(const char *line) {
             continue;
         }
 
-        if (!strcmp(args[i], "&")) {
+        if (ops[i] && !strcmp(args[i], "&")) {
             fprintf(stderr, "& must be last\n");
             result = 2;
             goto cleanup;
@@ -361,6 +368,31 @@ int main(int argc, char **argv) {
         }
 
         line[strcspn(line, "\r\n")] = '\0';
+
+/* Trim whitespace from the beginning and end */
+char *start = line;
+
+while (isspace((unsigned char)*start)) {
+    start++;
+}
+
+if (start != line) {
+    memmove(line, start, strlen(start) + 1);
+}
+
+size_t len = strlen(line);
+
+while (len > 0 &&
+       isspace((unsigned char)line[len - 1])) {
+    line[--len] = '\0';
+}
+
+/* Ignore empty input */
+if (line[0] == '\0') {
+    if (single) break;
+    continue;
+}
+
 
         if (!strcmp(line, "exit"))
             break;
