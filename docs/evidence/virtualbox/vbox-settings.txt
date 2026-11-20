@@ -1,0 +1,8 @@
+name="ubuntu"
+ostype="Ubuntu (64-bit)"
+memory=4096
+vram=128
+cpus=2
+VMState="running"
+graphicscontroller="vmsvga"
+accelerate3d="off"

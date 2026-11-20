@@ -1,0 +1,89 @@
+{
+  "baseline": "bulgaa777/II-4-1-UNIX-Shell@1154e60:Interactive/osh_HowItWorks.html",
+  "rows": [
+    {
+      "name": "whitespace",
+      "command": "   ",
+      "before": {
+        "stderr": "Missing command",
+        "file": null,
+        "children": 0
+      },
+      "after": {
+        "stderr": "",
+        "file": null,
+        "children": 0
+      }
+    },
+    {
+      "name": "unknown command creates file",
+      "command": "no_such_cmd_xyz_123 > out.txt",
+      "before": {
+        "stderr": "no_such_cmd_xyz_123: No such file or directory",
+        "file": "(not created)",
+        "children": 1
+      },
+      "after": {
+        "stderr": "no_such_cmd_xyz_123: No such file or directory",
+        "file": "",
+        "children": 1
+      }
+    },
+    {
+      "name": "unknown command truncates file",
+      "command": "no_such_cmd_xyz_123 > out.txt",
+      "before": {
+        "stderr": "no_such_cmd_xyz_123: No such file or directory",
+        "file": "old\n",
+        "children": 1
+      },
+      "after": {
+        "stderr": "no_such_cmd_xyz_123: No such file or directory",
+        "file": "",
+        "children": 1
+      }
+    },
+    {
+      "name": "invalid output path",
+      "command": "echo hi > missing_dir/out.txt",
+      "before": {
+        "stderr": "",
+        "file": "hi\n",
+        "children": 1
+      },
+      "after": {
+        "stderr": "missing_dir/out.txt: No such file or directory",
+        "file": "(not created)",
+        "children": 1
+      }
+    },
+    {
+      "name": "directory output",
+      "command": "echo hi > docs",
+      "before": {
+        "stderr": "",
+        "file": "hi\n",
+        "children": 1
+      },
+      "after": {
+        "stderr": "docs: Is a directory",
+        "file": null,
+        "children": 1
+      }
+    },
+    {
+      "name": "input failure preserves output",
+      "command": "cat > out.txt < missing.txt",
+      "before": {
+        "stderr": "missing.txt: No such file or directory",
+        "file": "old\n",
+        "children": 1
+      },
+      "after": {
+        "stderr": "missing.txt: No such file or directory",
+        "file": "old\n",
+        "children": 1
+      }
+    }
+  ]
+}

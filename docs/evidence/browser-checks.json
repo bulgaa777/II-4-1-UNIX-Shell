@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-20",
+  "browser": "Chrome",
+  "url": "https://osh-interactive-simulator.vercel.app/",
+  "checks": [
+    {
+      "name": "failed command with output",
+      "observed": "stderr visible, exit 127, out.txt 0 B"
+    },
+    {
+      "name": "missing input preserves output",
+      "observed": "stderr visible, exit 1, out.txt 4 B"
+    },
+    {
+      "name": "whitespace",
+      "observed": "no child or stderr, exit 0"
+    },
+    {
+      "name": "empty input",
+      "observed": "no child or stderr, exit 0 after whitespace"
+    },
+    {
+      "name": "background",
+      "observed": "prompt visible while sleep child is running in the model"
+    },
+    {
+      "name": "MN and EN",
+      "observed": "concept heading and quiz rendered in both languages"
+    },
+    {
+      "name": "reset",
+      "observed": "input restored to echo hello, out.txt removed"
+    },
+    {
+      "name": "theme",
+      "observed": "light and dark rendered"
+    },
+    {
+      "name": "keyboard",
+      "observed": "Enter runs command, Right advances steps"
+    },
+    {
+      "name": "mobile",
+      "observed": "390 x 844 viewport, document width 375, no page-wide overflow"
+    },
+    {
+      "name": "navigation",
+      "observed": "64px scroll margin keeps section headings below sticky nav"
+    }
+  ]
+}

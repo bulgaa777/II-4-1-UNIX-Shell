@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <time.h>
+#include <errno.h>
 
 #define MAXLINE 4096
 #define MAXARGS 128
@@ -28,8 +29,25 @@ static void event_log(pid_t pid, pid_t parent,
         "%ld\t%ld\t%ld\t%s\t%s\n",
         (long)time(NULL), (long)pid, (long)parent, state, cmd);
 
-    if (n > 0 && n < (int)sizeof(buf))
-        (void)write(fd, buf, (size_t)n);
+    if (n > 0 && n < (int)sizeof(buf)) {
+    size_t written = 0;
+
+        while (written < (size_t)n) {
+            ssize_t result = write(fd, buf + written,
+                               (size_t)n - written);
+
+            if (result < 0) {
+            if (errno == EINTR)
+                continue;
+            break;
+            }
+
+            if (result == 0)
+                break;
+
+            written += (size_t)result;
+        }
+}
 
     close(fd);
 }

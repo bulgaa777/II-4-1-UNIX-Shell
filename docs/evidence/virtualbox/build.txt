@@ -1,0 +1,5 @@
+cc -std=c11 -Wall -Wextra -O2 -o osh src/osh.c
+src/osh.c: In function 'event_log':
+src/osh.c:32:15: warning: ignoring return value of 'write' declared with attribute 'warn_unused_result' [-Wunused-result]
+   32 |         (void)write(fd, buf, (size_t)n);
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~

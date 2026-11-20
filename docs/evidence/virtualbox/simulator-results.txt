@@ -1,0 +1,71 @@
+PASS echo
+PASS quoted spaces
+PASS empty argument
+PASS no newline
+PASS Unicode bytes
+PASS pipe
+PASS empty input
+PASS whitespace
+PASS unknown command
+PASS missing input
+PASS bad output path
+PASS directory output
+PASS file as parent
+PASS directory input
+PASS missing filename
+PASS missing input filename
+PASS empty filename
+PASS operator filename
+PASS duplicate output
+PASS duplicate input
+PASS redirection only
+PASS missing right command
+PASS missing left command
+PASS second pipe
+PASS misplaced ampersand
+PASS ampersand only
+PASS unclosed quote
+PASS argument limit
+PASS token byte limit
+PASS empty history
+PASS false
+PASS right pipeline status
+PASS right pipeline failure
+PASS input redirection
+PASS pipe plus redirection
+PASS output
+PASS silent output
+PASS unknown with output
+PASS program failure with output
+PASS same file input output
+PASS relative path alias
+PASS new file in directory
+PASS C global output placement
+PASS C quoted operator limitation
+PASS truncate existing: true > out.txt
+PASS truncate existing: false > out.txt
+PASS truncate existing: no_such_cmd_xyz_123 > out.txt
+PASS truncate existing: cat missing.txt > out.txt
+PASS input failure leaves output untouched even if > appears first
+PASS parser errors have no filesystem side effects
+PASS overwrite shorter text removes suffix
+PASS read previously redirected output
+PASS history replay
+PASS blank preserves history
+PASS C whitespace history behavior
+PASS blank preserves previous interactive result
+PASS failed command is replayable
+PASS background return code is launch status
+PASS background timeline shows prompt before reaping
+PASS cd fails and pwd remains unchanged
+PASS step snapshots keep pre-truncation contents
+PASS reset restores files, history, PIDs and result
+PASS bilingual concepts and defense explanations
+PASS interactive session: ["echo first","!!"]
+PASS interactive session: ["echo first","","!!"]
+PASS interactive session: ["echo first","   ","!!"]
+PASS interactive session: ["false",""]
+PASS interactive session: ["no_such_cmd_xyz_123","!!"]
+PASS interactive session: ["echo old > out.txt","no_such_cmd_xyz_123 > out.txt","cat < out.txt"]
+PASS interactive session: ["echo old > out.txt","cat > out.txt < missing.txt","cat < out.txt"]
+PASS: 70 simulator checks (C parity enabled)

@@ -1,0 +1,92 @@
+[
+  {
+    "file": "00-ubuntu-tests.png",
+    "size": [
+      1360,
+      765
+    ],
+    "capture": "VBoxManage controlvm ubuntu screenshotpng: actual guest framebuffer",
+    "sha256": "663516f4dcaff0a9b70f1b263e7ba7442d9796d93cbc9ba429d30eff0c67452b"
+  },
+  {
+    "file": "01-real-c-shell-edge-cases.png",
+    "size": [
+      1280,
+      800
+    ],
+    "capture": "VBoxManage controlvm ubuntu screenshotpng: actual guest framebuffer",
+    "sha256": "f2dec12560ef328ce49feffc6bc82d6ca32197fc87baf43dc50daa9028755c7d"
+  },
+  {
+    "file": "02-failed-command-truncation.png",
+    "size": [
+      1360,
+      765
+    ],
+    "capture": "Pillow ImageGrab inside Ubuntu X11: actual guest desktop",
+    "sha256": "cf4c228838d2acea4aa902ec77551512548bb1638d8a9282d03010c3683de2cf"
+  },
+  {
+    "file": "03-missing-input-preserves-output.png",
+    "size": [
+      1360,
+      765
+    ],
+    "capture": "Pillow ImageGrab inside Ubuntu X11: actual guest desktop",
+    "sha256": "f4b8f24747536d5fd0c5310b506bf52e09089e6f5632c2c00c2bd692d53ae93c"
+  },
+  {
+    "file": "04-whitespace-no-error.png",
+    "size": [
+      1360,
+      765
+    ],
+    "capture": "Pillow ImageGrab inside Ubuntu X11: actual guest desktop",
+    "sha256": "75908384ac8e417c17c15045879c9f1ec36e81956d6c3b1aabccd8a2c5706acb"
+  },
+  {
+    "file": "05-empty-input-no-child.png",
+    "size": [
+      1360,
+      765
+    ],
+    "capture": "Pillow ImageGrab inside Ubuntu X11: actual guest desktop",
+    "sha256": "199e8cc4f06e73aeaa3e770bdf536d80c3b39b0a1aa4e89b27eb20b891b72ae1"
+  },
+  {
+    "file": "06-background-prompt.png",
+    "size": [
+      1360,
+      765
+    ],
+    "capture": "Pillow ImageGrab inside Ubuntu X11: actual guest desktop",
+    "sha256": "1492e05172147a6de622d86a66745ed6ca15e16f138d1469cb0e2818cbb3ec3a"
+  },
+  {
+    "file": "07-concepts-mn.png",
+    "size": [
+      1360,
+      765
+    ],
+    "capture": "Pillow ImageGrab inside Ubuntu X11: actual guest desktop",
+    "sha256": "f629e2018351845be2dddd7d47fa307222802145f873c25e1e5b0172d5d47f93"
+  },
+  {
+    "file": "08-defense-quiz-en.png",
+    "size": [
+      1360,
+      765
+    ],
+    "capture": "Pillow ImageGrab inside Ubuntu X11: actual guest desktop",
+    "sha256": "3bb3951a388b70cf6bcd43979761b9ef51ff1c740cc92058ba99a34c8b86a2ec"
+  },
+  {
+    "file": "09-narrow-layout.png",
+    "size": [
+      500,
+      758
+    ],
+    "capture": "Firefox WebDriver screenshot inside Ubuntu: 500px headless viewport",
+    "sha256": "9c75026a3e070e33c649f7b17865c912222f572c59be1c0dcc1fdc8c67e03b15"
+  }
+]

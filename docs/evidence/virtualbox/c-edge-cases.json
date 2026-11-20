@@ -1,0 +1,44 @@
+[
+  {
+    "command": "echo old > out.txt",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "out_file_bytes": 4
+  },
+  {
+    "command": "no_such_cmd_xyz_123 > out.txt",
+    "exit_code": 127,
+    "stdout": "",
+    "stderr": "no_such_cmd_xyz_123: No such file or directory\n",
+    "out_file_bytes": 0
+  },
+  {
+    "command": "echo old > out.txt",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "out_file_bytes": 4
+  },
+  {
+    "command": "cat > out.txt < missing.txt",
+    "exit_code": 1,
+    "stdout": "",
+    "stderr": "missing.txt: No such file or directory\n",
+    "out_file_bytes": 4
+  },
+  {
+    "command": "",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "out_file_bytes": 4
+  },
+  {
+    "command": "   ",
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "",
+    "out_file_bytes": 4
+  }
+]
